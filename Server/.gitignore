@@ -1,0 +1,43 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node modules
+node_modules/
+
+# Build output (if using TypeScript or bundlers)
+dist/
+build/
+
+# Environment files (VERY important)
+.env
+.env.local
+.env.*.local
+
+# OS / Editor files
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cache files
+*.local
+.cache/
+.tmp/
+
+# PM2 logs and dumps (if you use PM2)
+pids
+*.pid
+*.seed
+*.pid.lock
+pm2-*.log
