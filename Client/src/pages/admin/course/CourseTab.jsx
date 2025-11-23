@@ -1,5 +1,4 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
-import RichTextEditor from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -207,7 +206,13 @@ const CourseTab = () => {
                     {/* Description */}
                     <div className="space-y-1">
                         <Label>Description</Label>
-                        <RichTextEditor input={input} setInput={setInput} />
+                        <textarea
+                            name="description"
+                            value={input.description}
+                            onChange={changeEventHandler}
+                            placeholder="Ex. This course covers the basics of fullstack development."
+                            className="w-full p-2 border rounded-md h-32 overflow-y-auto resize-none"
+                        />
                     </div>
 
                     {/* 4 Inputs Grid */}

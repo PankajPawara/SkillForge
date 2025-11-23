@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/table";
 
 import { Card } from "@/components/ui/card";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const ManageUsers = () => {
   const { data, isLoading, refetch } = useGetAllUsersQuery();
@@ -79,11 +80,11 @@ const ManageUsers = () => {
   };
 
   if (isLoading)
-    return <p className="text-center mt-6 text-lg font-medium">Loading users...</p>;
+    return <LoadingSpinner />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 my-5">
-      <h1 className="text-3xl font-bold mb-4">Manage Users</h1>
+    <div className="max-w-7xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4 text-center">Manage Users</h1>
 
       <Card className="p-6 bg-white dark:bg-gray-700 shadow-sm rounded-xl">
         {/* Table wrapper for horizontal scroll on mobile */}

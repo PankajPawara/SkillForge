@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 // import LoadingSpinner from "@/components/LoadingSpinner";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -54,7 +55,7 @@ const SearchPage = () => {
   };
 
 
-  // if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <LoadingSpinner />;
   const isEmpty = !isLoading && filteredCourses?.length === 0;
 
   return (
@@ -63,14 +64,12 @@ const SearchPage = () => {
         {query && (
           <h1 className="font-bold text-xl md:text-2xl">
             Result for{" "}
-            <span className="text-blue-800 font-bold italic">{query}</span>
+            <span className="text-blue-800 dark:text-blue-500 font-bold italic">{query}</span>
           </h1>
         )}
       </div>
 
-      <div className="flex flex-row gap-5">
-        {/* <div className="flex-0 border p-5 rounded">
-        </div> */}
+      <div className="flex flex-col md:flex-row gap-5">
           <Filter handleFilterChange={handleFilterChange} />
         <Separator orientation="vertical" />
         <Card className="flex-1 bg-white dark:bg-gray-700 border p-5 rounded-lg shadow">

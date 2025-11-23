@@ -107,15 +107,15 @@ const Login = () => {
   ]);
 
   return (
-    <div className="flex items-center w-full justify-center mt-5 ">
-      <Tabs defaultValue="login" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2  bg-white dark:bg-gray-700">
+    <div className="flex items-center justify-center mt-10 md:mt-20 mb-30">
+      <Tabs defaultValue="login" className="w-[90vw] md:w-[40vw]">
+        <TabsList className="w-full bg-white dark:bg-gray-700">
           <TabsTrigger value="signup">Signup</TabsTrigger>
           <TabsTrigger value="login">Login</TabsTrigger>
         </TabsList>
 
         {/* SIGNUP FORM */}
-        <TabsContent value="signup">
+        <TabsContent value="signup" className="">
           <Card className=" bg-white dark:bg-gray-700">
             <CardHeader>
               <CardTitle>Signup</CardTitle>
@@ -165,7 +165,7 @@ const Login = () => {
               <div className="space-y-1">
                 <Label>Role</Label>
                 <Select value={signupInput.role} onValueChange={selectRole}>
-                  <SelectTrigger className="w-[350px]">
+                  <SelectTrigger className="w-full">
                     <SelectValue/>
                   </SelectTrigger>
                   <SelectContent>
@@ -208,7 +208,7 @@ const Login = () => {
               )}
             </CardContent>
             <CardFooter>
-              <Button className="w-[350px] bg-blue-700 text-white hover:bg-blue-800"
+              <Button className="bg-blue-700 text-white hover:bg-blue-800"
                 disabled={registerIsLoading}
                 onClick={() => handleRegistration("signup")}>
                 {registerIsLoading ? (
@@ -224,7 +224,7 @@ const Login = () => {
         </TabsContent>
 
         {/* LOGIN FORM */}
-        <TabsContent value="login">
+        <TabsContent value="login" className="mb-10">
           <Card className=" bg-white dark:bg-gray-700">
             <CardHeader>
               <CardTitle>Login</CardTitle>
@@ -264,7 +264,7 @@ const Login = () => {
               )}
             </CardContent>
             <CardFooter>
-              <Button className="w-[350px] text-white bg-green-600 hover:bg-green-700"
+              <Button className="text-white bg-green-600 hover:bg-green-700"
               disabled={loginIsLoading} onClick={() => handleRegistration("login")}>
                 {loginIsLoading ? (
                   <>

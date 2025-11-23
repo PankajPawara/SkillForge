@@ -9,7 +9,7 @@ const EditCourse = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex-1 px-4 md:mx-10 md:px-0">
+    <div className="flex-1 md:mx-10">
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">

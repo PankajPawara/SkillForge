@@ -12,55 +12,57 @@ const Sidebar = () => {
       {/* SIDEBAR */}
       <aside
         className="
-          w-48 
+          md:w-48 w-full
           border-r 
-          p-5 
+          flex flex-col 
+          items-center
+          px-auto py-1
+          md:p-5 
           space-y-4 
-          hidden 
-          sm:block 
           bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
           shadow-lg
           fixed 
           left-0 
-          h-screen
+          md:h-screen
+          z-10
         "
       >
         {user?.role === "Trainer" && (
-          <>
-            <Link to="dashboard" className="flex items-center gap-2 hover:text-blue-600">
+          <div className="flex flex-row md:flex-col gap-4">
+            <Link to="dashboard" className="flex flex-col md:flex-row items-center md:gap-2 hover:text-blue-400">
               <ChartBar size={16} />
               <span>Dashboard</span>
             </Link>
 
-            <Link to="course" className="flex items-center gap-2 hover:text-blue-600">
+            <Link to="course" className="flex flex-col md:flex-row items-center md:gap-2 hover:text-blue-400">
               <SquareLibrary size={16} />
               <span>Courses</span>
             </Link>
-          </>
+          </div>
         )}
 
         {user?.role === "Admin" && (
-          <>
-            <Link to="dashboard" className="flex items-center gap-2 hover:text-blue-600">
-              <ChartBar size={16} />
+          <div className="flex flex-row md:flex-col gap-4">
+            <Link to="dashboard" className="flex flex-col md:flex-row items-center md:gap-2 hover:text-blue-400">
+              <ChartBar />
               <span>Analytics</span>
             </Link>
 
-            <Link to="manage-users" className="flex items-center gap-2 hover:text-blue-600">
-              <Users size={16} />
+            <Link to="manage-users" className="flex flex-col md:flex-row items-center md:gap-2 hover:text-blue-400">
+              <Users />
               <span>Manage Users</span>
             </Link>
 
-            <Link to="manage-courses" className="flex items-center gap-2 hover:text-blue-600">
-              <SquareLibrary size={16} />
+            <Link to="manage-courses" className="flex flex-col md:flex-row items-center md:gap-2 hover:text-blue-400">
+              <SquareLibrary />
               <span>Manage Courses</span>
             </Link>
-          </>
+          </div>
         )}
       </aside>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 p-5 ml-48 sm:p-10 overflow-y-auto">
+      <main className="flex-1 p-5 mt-12 md:mt-0 md:ml-48 overflow-y-auto">
         <Outlet />
       </main>
     </div>

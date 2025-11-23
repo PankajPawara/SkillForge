@@ -59,7 +59,7 @@ const CourseDetail = () => {
   };
 
   return (
-    <div className="mt-15 sm:px-5 md:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6">      
+    <div className="mt-15 px-5 md:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6">      
       {/* Video Preview */}
       <div className="col-span-3 space-y-4 lg:col-span-2">
         <Card className=" dark:bg-gray-700 bg-white ">
@@ -102,7 +102,7 @@ const CourseDetail = () => {
       </div>
 
       {/* Left Section */}
-      <div className="col-span-3 space-y-4 ">
+      <div className="sm:col-span-3 col-span-3 space-y-4 ">
         
         {/* Top Banner */}
         <Card className="p-5 dark:bg-gray-700 bg-white border">
@@ -152,7 +152,7 @@ const CourseDetail = () => {
           <CardContent className="space-y-3 max-h-60 overflow-y-auto">
             {course.lectures?.map((lecture, idx) => (
               <div key={idx} className="flex items-center gap-3 text-sm dark:text-gray-300">
-                {purchased || lecture.isPreviewFree ? (
+                {purchased ? (
                   <PlayCircle size={14} className="text-[#2563EB]" />
                 ) : (
                   <Lock size={14} className="text-gray-500" />

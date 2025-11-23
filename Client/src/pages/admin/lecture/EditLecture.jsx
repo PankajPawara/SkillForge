@@ -9,7 +9,7 @@ const EditLecture = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex-1 mx-4 md:mx-10 py-6">
+    <div className="flex-1 md:mx-10 py-6">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Button

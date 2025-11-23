@@ -67,7 +67,7 @@ const Filter = ({ handleFilterChange }) => {
           </SelectContent>
         </Select>
       </div>
-      <Separator className="my-4" />
+      <Separator />
       <div>
         <h1 className="font-semibold mb-2">CATEGORY</h1>
         {categories.map((category) => (

@@ -13,10 +13,11 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { Loader2, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const ManageCourses = () => {
   const { data, isLoading, isError, refetch } = useGetAllCoursesQuery();
@@ -36,17 +37,13 @@ const ManageCourses = () => {
   };
 
   if (isLoading)
-    return (
-      <div className="flex justify-center mt-10">
-        <Loader2 className="animate-spin" />
-      </div>
-    );
+    return <LoadingSpinner />;
 
   if (isError) return <p className="text-red-500">Failed to load courses</p>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 my-5 ">
-      <h1 className="text-2xl font-bold mb-4">Manage Courses</h1>
+    <div className="max-w-7xl mx-auto ">
+      <h1 className="text-2xl font-bold mb-4 text-center">Manage Courses</h1>
 
       <Card className="p-6 bg-white dark:bg-gray-700 shadow-sm rounded-xl">
         {/* Responsive table wrapper */}

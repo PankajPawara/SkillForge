@@ -45,7 +45,7 @@ const CreateLecture = () => {
   console.log(lectureData);
 
   return (
-    <div className="flex-1 mx-10">
+    <div className="flex-1 md:mx-10">
       <div className="flex mb-4 gap-2">
         <Button size="icon" variant="outline" className="rounded-full" onClick={() => history.back()}>
           <ArrowLeft />
