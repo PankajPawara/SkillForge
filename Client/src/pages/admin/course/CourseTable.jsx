@@ -24,45 +24,73 @@ const CourseTable = () => {
   // console.log("data: ", data);
 
   return (
-    <Card className="flex flex-col border rounded p-10 gap-5 mx-10">
-      <div>
-        <Button className="bg-blue-600 hover:bg-blue-800" onClick={() => navigate(`create`)} ><PlusCircle />Create a new course</Button>
+    <Card className="flex flex-col bg-white dark:bg-gray-700 border rounded-lg p-6  gap-6 mx-4 md:mx-10">
+
+      <h1 className="text-center text-xl font-semibold">A list of your courses</h1>
+
+      {/* Top Button */}
+      <div className="flex justify-end ">
+        <Button
+          className="bg-blue-600 text-white hover:bg-blue-800 flex items-center gap-2 "
+          onClick={() => navigate(`create`)}
+        >
+          <PlusCircle className="w-4 h-4 " />
+          Create a new course
+        </Button>
       </div>
-      <h1 className="text-center">A list of your courses</h1>
-      <div className="overflow-x-auto border rounded-lg shadow">
+
+      {/* Table Container */}
+      <div className="overflow-x-auto border rounded-lg shadow-sm">
         <Table className="min-w-full">
-          <TableCaption></TableCaption>
-          <TableHeader className={"items-center"}>
+          <TableHeader>
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="w-[100px]">Price</TableHead>
-              <TableHead className="text-center">Action</TableHead>
+              <TableHead className="w-[120px]">Price</TableHead>
+              <TableHead className="text-center w-[150px]">Action</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {data.courses.map((course) => (
               <TableRow key={course._id}>
-                <TableCell>{course.courseTitle}</TableCell>
-                <TableCell> {course.isPublished ? (
-                  <>
-                    <Badge className="bg-blue-400 text-white">
+
+                {/* Title */}
+                <TableCell className="font-medium">
+                  {course.courseTitle}
+                </TableCell>
+
+                {/* Published / Private */}
+                <TableCell>
+                  {course.isPublished ? (
+                    <Badge className="bg-blue-500 text-white flex items-center gap-1">
                       <Verified className="w-4 h-4" />
                       Published
                     </Badge>
-                  </>
-                ) : (
-                  <>
-                    <Badge className="bg-gray-500 text-white">
+                  ) : (
+                    <Badge className="bg-gray-500 text-white flex items-center gap-1">
                       <Lock className="w-4 h-4" />
                       Private
                     </Badge>
-                  </>
-                )} </TableCell>
-                <TableCell className="font-medium">₹ {course?.coursePrice || "NA"}</TableCell>
-                <TableCell className="text-center">
-                  <Button onClick={() => navigate(`${course._id}`)}><Edit />Edit Course</Button>
+                  )}
                 </TableCell>
+
+                {/* Price */}
+                <TableCell className="font-medium">
+                  ₹ {course?.coursePrice || "NA"}
+                </TableCell>
+
+                {/* Edit Button */}
+                <TableCell className="text-center">
+                  <Button
+                    className="flex items-center gap-1"
+                    onClick={() => navigate(`${course._id}`)}
+                  >
+                    <Edit className="w-4 h-4" />
+                    Edit
+                  </Button>
+                </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
@@ -70,6 +98,7 @@ const CourseTable = () => {
       </div>
     </Card>
   );
+
 };
 
 export default CourseTable;

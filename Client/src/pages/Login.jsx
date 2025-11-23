@@ -107,16 +107,16 @@ const Login = () => {
   ]);
 
   return (
-    <div className="flex items-center w-full justify-center mt-5">
+    <div className="flex items-center w-full justify-center mt-5 ">
       <Tabs defaultValue="login" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2  bg-white dark:bg-gray-700">
           <TabsTrigger value="signup">Signup</TabsTrigger>
           <TabsTrigger value="login">Login</TabsTrigger>
         </TabsList>
 
         {/* SIGNUP FORM */}
         <TabsContent value="signup">
-          <Card>
+          <Card className=" bg-white dark:bg-gray-700">
             <CardHeader>
               <CardTitle>Signup</CardTitle>
               <CardDescription>
@@ -208,7 +208,7 @@ const Login = () => {
               )}
             </CardContent>
             <CardFooter>
-              <Button className="w-[350px] bg-blue-700 hover:bg-blue-800"
+              <Button className="w-[350px] bg-blue-700 text-white hover:bg-blue-800"
                 disabled={registerIsLoading}
                 onClick={() => handleRegistration("signup")}>
                 {registerIsLoading ? (
@@ -225,14 +225,14 @@ const Login = () => {
 
         {/* LOGIN FORM */}
         <TabsContent value="login">
-          <Card>
+          <Card className=" bg-white dark:bg-gray-700">
             <CardHeader>
               <CardTitle>Login</CardTitle>
               <CardDescription>
                 Welcome back! Please login to continue...
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-2 ">
               <div className="space-y-1">
                 <Label htmlFor="username">Username</Label>
                 <Input
@@ -264,7 +264,7 @@ const Login = () => {
               )}
             </CardContent>
             <CardFooter>
-              <Button className="w-[350px] bg-green-600 hover:bg-green-700"
+              <Button className="w-[350px] text-white bg-green-600 hover:bg-green-700"
               disabled={loginIsLoading} onClick={() => handleRegistration("login")}>
                 {loginIsLoading ? (
                   <>

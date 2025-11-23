@@ -1,7 +1,18 @@
 import React from "react";
-import { useGetAllCoursesQuery, useDeleteCourseMutation, useTogglePublishCourseMutation } from "@/features/api/adminApi";
+import {
+  useGetAllCoursesQuery,
+  useDeleteCourseMutation,
+  useTogglePublishCourseMutation
+} from "@/features/api/adminApi";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +35,7 @@ const ManageCourses = () => {
     }
   };
 
-  const handleTogglePublish = async (courseId) => {
+    const handleTogglePublish = async (courseId) => {
     try {
       await togglePublish(courseId).unwrap();
       toast.success("Course status updated");
@@ -34,47 +45,81 @@ const ManageCourses = () => {
     }
   };
 
-  if (isLoading) return <div className="flex justify-center mt-10"><Loader2 className="animate-spin" /></div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center mt-10">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+
   if (isError) return <p className="text-red-500">Failed to load courses</p>;
-  console.log(isError);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 my-5">
+    <div className="max-w-7xl mx-auto px-4 my-5 ">
       <h1 className="text-2xl font-bold mb-4">Manage Courses</h1>
-      <Card className="p-10">
-        <Card className={"w-full flex justify-center"}>
-          <Table className="w-full shadow rounded mx-auto">
+
+      <Card className="p-6 bg-white dark:bg-gray-700 shadow-sm rounded-xl">
+        {/* Responsive table wrapper */}
+        <div className="w-full overflow-x-auto rounded-md border">
+          <Table className="w-full text-sm">
             <TableHeader>
               <TableRow>
-                <TableHead className={"text-center"}>Thumbnail</TableHead>
+                <TableHead className="text-center">Thumbnail</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Creator</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className={"text-center"}>Actions</TableHead>
+                <TableHead className="text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
               {data?.courses?.map((course) => (
                 <TableRow key={course._id}>
-                  <TableCell className={"mx-auto text-center"}><img src={course.courseThumbnail} className="h-12 w-20 object-cover mx-auto rounded" alt="thumb" /></TableCell>
+                  <TableCell className="text-center">
+                    <img
+                      src={course.courseThumbnail}
+                      className="h-14 w-24 object-cover rounded-md mx-auto"
+                      alt="thumbnail"
+                    />
+                  </TableCell>
+
                   <TableCell>{course.courseTitle}</TableCell>
                   <TableCell>₹{course.coursePrice || "Unknown"}</TableCell>
                   <TableCell>{course.creator?.name || "Unknown"}</TableCell>
-                  <TableCell>{course.isPublished ? "Published" : "Unpublished"}</TableCell>
-                  <TableCell className="space-x-2 text-center">
-                    <Button size="sm" variant="default" onClick={() => navigate(`${course._id}`)}>
-                      <Pencil size={16} />Edit
+
+                  <TableCell className="font-medium">
+                    {course.isPublished ? (
+                      <span className="text-green-600">Published</span>
+                    ) : (
+                      <span className="text-red-600">Unpublished</span>
+                    )}
+                  </TableCell>
+
+                  <TableCell className="text-center space-x-2 whitespace-nowrap">
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={() => navigate(`${course._id}`)}
+                      className="hover:bg-gray-700 dark:hover:bg-gray-400"
+                    >
+                      <Pencil size={16} className="mr-1" /> Edit
                     </Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(course._id)}>
-                      <Trash2 size={16} />Delete
+
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDelete(course._id)}
+                      className="bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800"
+                    >
+                      <Trash2 size={16} className="mr-1" /> Delete
                     </Button>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </Card>
+        </div>
       </Card>
     </div>
   );

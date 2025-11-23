@@ -4,38 +4,83 @@ import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Course = ({course}) => {
+const Course = ({ course }) => {
   return (
     <Link to={`/course-detail/${course._id}`}>
-    <Card className="overflow-hidden rounded-lg py-0 dark:bg-gray-800 bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-      <div className="relative">
-        <img
-          src={course.courseThumbnail}
-          alt="course"
-          className="w-full h-40 object-cover rounded-t-lg"
-        />
-      </div>
-      <CardContent className="px-5 pb-2">
-        <h1 className="hover:underline font-bold text-lg truncate">
-          {course.courseTitle}
-        </h1>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={course.creator?.photoUrl || "https://github.com/shadcn.png"} alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <h1 className="font-medium text-sm">{course.creator?.name}</h1>
+      <Card
+        className="
+          overflow-hidden rounded-xl py-0 
+          transition-all duration-300 shadow-md 
+          hover:shadow-xl hover:scale-[1.02]
+
+          bg-white dark:bg-gray-700
+          border border-gray-200 dark:border-gray-600
+        "
+      >
+        {/* Thumbnail */}
+        <div className="relative">
+          <img
+            src={course.courseThumbnail}
+            alt="course"
+            className="w-full h-40 object-cover rounded-t-xl"
+          />
+        </div>
+
+        {/* Bottom Content */}
+        <CardContent className="px-5 pb-3">
+          {/* Title */}
+          <h1
+            className="
+              font-bold text-lg truncate hover:underline
+              text-gray-900 dark:text-gray-100
+            "
+          >
+            {course.courseTitle}
+          </h1>
+
+          {/* Creator + Level */}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-9 w-9">
+                <AvatarImage
+                  src={course.creator?.photoUrl || "https://github.com/shadcn.png"}
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+
+              <h1
+                className="
+                  text-sm font-medium 
+                  text-gray-900 dark:text-gray-300
+                "
+              >
+                {course.creator?.name}
+              </h1>
+            </div>
+
+            {/* Level Badge */}
+            <Badge
+              className="
+                text-white px-2 py-1 text-xs rounded-full
+                bg-blue-600 hover:bg-blue-700
+                dark:bg-blue-600 dark:hover:bg-blue-700
+              "
+            >
+              {course.courseLevel}
+            </Badge>
           </div>
-          <Badge className={'bg-blue-600 text-white px-2 py-1 text-xs rounded-full'}>
-            {course.courseLevel}
-          </Badge>
-        </div>
-        <div className="text-lg font-bold">
-            <span>₹{course.coursePrice}</span>
-        </div>
-      </CardContent>
-    </Card>
+
+          {/* Price */}
+          <div
+            className="
+              text-lg font-bold mt-2
+              text-gray-900 dark:text-gray-100
+            "
+          >
+            ₹{course.coursePrice}
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 };

@@ -85,7 +85,7 @@ export const login = async (req, res) => {
                 message: "Incorrect password."
             })
         }
-        generateToken(res, user, `Welcome back ${user.name}`);
+        generateToken(res,user);
         return res.status(200).json({
             success: true,
             message: `Welcome back ${user.name}`,
@@ -99,7 +99,6 @@ export const login = async (req, res) => {
                 photoUrl: user.photoUrl,
             }
         });
-
 
     } catch (error) {
         console.log(error);

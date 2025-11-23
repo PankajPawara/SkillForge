@@ -1,24 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LectureTab from "./LectureTab";
 
 const EditLecture = () => {
-  const params = useParams();
-  const courseId = params.courseId;
+  const { courseId } = useParams();
+  const navigate = useNavigate();
+
   return (
-    <div className="flex-1 mx-10">
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
-          {/* <Link to={`/trainer/course/${courseId}/lecture`}> */}
-            <Button size="icon" variant="outline" className="rounded-full" onClick={() => history.back()}>
-              <ArrowLeft size={16}/>
-            </Button>
-          {/* </Link> */}
-          <h1 className="font-bold text-xl">Update Your Lecture</h1>
-        </div>
+    <div className="flex-1 mx-4 md:mx-10 py-6">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <Button
+          size="icon"
+          variant="outline"
+          className="rounded-full"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft size={16} />
+        </Button>
+
+        <h1 className="font-bold text-xl md:text-2xl">
+          Update Your Lecture
+        </h1>
       </div>
+
+      {/* Tabs Component */}
       <LectureTab />
     </div>
   );

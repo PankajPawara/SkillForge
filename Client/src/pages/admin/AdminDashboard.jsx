@@ -1,79 +1,90 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useGetAdminStatsQuery } from "@/features/api/adminApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 const AdminDashboard = () => {
-    const { data, isLoading, refetch } = useGetAdminStatsQuery();
+  const { data, isLoading } = useGetAdminStatsQuery();
 
-    useEffect(() => {
-        refetch();
-    }, []);
+  if (isLoading) return <LoadingSpinner />;
 
-    console.log("Admin Dashbard Data: ", data);
+  const { totalUsers = {}, totalCourses = {}, revenue = 0, totalEnrollment = 0 } = data || {};
+  const totalUser = (totalUsers.admins || 0) + (totalUsers.students || 0) + (totalUsers.trainers || 0);
 
-    if (isLoading) return <LoadingSpinner />;
+  return (
+    <div className="max-w-7xl mx-auto p-4 space-y-6">
+      <h1 className="text-3xl font-bold text-center">Analytics</h1>
 
-    const { totalUsers, totalCourses, revenue, totalEnrollment } = data || {};
-console.log("Total users",totalUsers);
-    const totalUser=totalUsers.admins + totalUsers.students + totalUsers.trainers
-    return (
-        <div className="max-w-7xl mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6 text-center">Analytics</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-                <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
-                    <CardHeader>
-                        <CardTitle>
-                            Total Users<p className="text-3xl font-bold text-blue-600"> {totalUser || 0}</p>
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className={"flex gap-10 justify-center"}>
-                        <div className="flex items-center gap-2">
-                            Admins:<p className="text-3xl font-bold text-blue-600"> {totalUsers?.admins || 0}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            Students:<p className="text-3xl font-bold text-blue-600"> {totalUsers?.students || 0}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            Trainers:<p className="text-3xl font-bold text-blue-600"> {totalUsers?.trainers || 0}</p>
-                        </div>
-                    </CardContent>
-                </Card>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
 
-                <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
-                    <CardHeader>
-                        <CardTitle>Total Courses</CardTitle>
-                    </CardHeader>
-                    <CardContent className={"flex gap-10 justify-center flex items-center"}>
-                        <div className="flex items-center gap-2">
-                            Published:<p className="text-3xl font-bold text-blue-600"> {totalCourses?.published || 0}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            Unpublished:<p className="text-3xl font-bold text-blue-600"> {totalCourses?.unpublished || 0}</p>
-                        </div>
-                    </CardContent>
-                </Card>
+        {/* Total Users */}
+        <Card className="shadow-lg bg-white dark:bg-gray-700 hover:shadow-xl transition-all text-center">
+          <CardHeader>
+            <CardTitle>Total Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-4">
+              {totalUser}
+            </p>
 
-                <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
-                    <CardHeader>
-                        <CardTitle>Revenue</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-3xl font-bold text-blue-600">₹ {revenue}</p>
-                    </CardContent>
-                </Card>
-
-                <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 text-center">
-                    <CardHeader>
-                        <CardTitle>Total Enrollments</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-3xl font-bold text-blue-600">{totalEnrollment}</p>
-                    </CardContent>
-                </Card>
+            <div className="flex justify-center gap-8 text-left">
+              <StatItem label="Admins" value={totalUsers.admins} />
+              <StatItem label="Students" value={totalUsers.students} />
+              <StatItem label="Trainers" value={totalUsers.trainers} />
             </div>
-        </div>
-    );
+          </CardContent>
+        </Card>
+
+        {/* Total Courses */}
+        <Card className="shadow-lg bg-white dark:bg-gray-700 hover:shadow-xl transition-all text-center">
+          <CardHeader>
+            <CardTitle>Total Courses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center gap-10">
+              <StatItem label="Published" value={totalCourses.published} />
+              <StatItem label="Unpublished" value={totalCourses.unpublished} />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Revenue */}
+        <Card className="shadow-lg bg-white dark:bg-gray-700 hover:shadow-xl transition-all text-center">
+          <CardHeader>
+            <CardTitle>Revenue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">
+              ₹ {revenue || 0}
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Total Enrollments */}
+        <Card className="shadow-lg bg-white dark:bg-gray-700 hover:shadow-xl transition-all text-center">
+          <CardHeader>
+            <CardTitle>Total Enrollments</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">
+              {totalEnrollment || 0}
+            </p>
+          </CardContent>
+        </Card>
+
+      </div>
+    </div>
+  );
 };
+
+const StatItem = ({ label, value }) => (
+  <div className="flex flex-col items-center">
+    <span className="text-sm text-gray-600 dark:text-gray-300">{label}</span>
+    <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+      {value || 0}
+    </span>
+  </div>
+);
 
 export default AdminDashboard;

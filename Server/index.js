@@ -9,6 +9,7 @@ import mediaRoute from "./routes/media.route.js";
 import purchaseRoute from "./routes/purchaseCourse.route.js";
 import courseProgressRoute from "./routes/courseProgress.route.js";
 import adminRoutes from "./routes/admin.route.js"
+import { stripeWebhook } from "./controllers/coursePurchase.controller.js";
 dotenv.config({});
 
 // call database connection here
@@ -16,6 +17,13 @@ connectDB();
 const app = express();
 
 const PORT = process.env.PORT || 4080;
+
+// RAW body ONLY for Stripe webhook
+app.post(
+  "/api/v1/purchase/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 
 // default middleware
 app.use(express.json());

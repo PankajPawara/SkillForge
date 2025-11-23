@@ -59,7 +59,7 @@ const CreateLecture = () => {
           </p>
         </div>
       </div>
-      <Card className="space-y-2 p-10">
+      <Card className="space-y-2 p-5 bg-white dark:bg-gray-700">
         <div className="space-y-2">
           <Label>Title</Label>
           <Input
@@ -81,8 +81,8 @@ const CreateLecture = () => {
             )}
           </Button>
         </div>
-        <Card className={"p-10"}>
-          <div>
+        <Card className={"p-5 bg-white dark:bg-gray-800"}>
+          <div className="">
             {lectureLoading ? (
               <p>Loading lectures...</p>
             ) : lectureError ? (

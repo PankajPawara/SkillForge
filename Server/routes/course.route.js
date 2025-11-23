@@ -2,6 +2,7 @@ import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import { createCourse, 
     createLecture, 
+    deleteCourse, 
     editCourse, 
     editLecture, 
     getCourseById, 
@@ -31,5 +32,6 @@ router.route("/:courseId/lecture/:lectureId").post(isAuthenticated, editLecture)
 router.route("/lecture/:lectureId").delete(isAuthenticated, removeLecture);
 router.route("/lecture/:lectureId").get(isAuthenticated, getLectureById);
 router.route("/:courseId").patch(isAuthenticated, togglePublishCourse);
+router.route("/course/:courseId").delete(isAuthenticated, deleteCourse);
 
 export default router;

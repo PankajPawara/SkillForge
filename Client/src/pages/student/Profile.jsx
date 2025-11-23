@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, Loader2, Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Course from "./Course";
 import {
@@ -19,8 +19,14 @@ import {
   useUpdateUserMutation,
 } from "@/features/api/authApi";
 import { toast } from "react-toastify";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Profile = () => {
@@ -29,54 +35,34 @@ const Profile = () => {
     mobile: "",
     email: "",
     role: "",
-    photoUrl: "",
   });
-  const [profilePhoto, setProfilePhoto] = useState("");
 
-  const changeEventHandler = (e) => {
-    const { name, value } = e.target;
-    setInput({ ...input, [name]: value });
-  };
-
-  const selectRole = (value) => {
-    setInput({ ...input, role: value });
-  };
+  const [profilePhoto, setProfilePhoto] = useState(null);
 
   const { data, isLoading, refetch } = useLoadUserQuery();
-  {
-    if (isLoading) {
-      refetch();
-    }
-  }
-  useEffect(() => {
-    refetch();
-  })
-  console.log("Loaded User Data:", data);
 
   useEffect(() => {
     if (data?.user) {
-      const user = data?.user;
+      const user = data.user;
       setInput({
         name: user.name,
         mobile: user.mobile,
         email: user.email,
         role: user.role,
-        photoUrl: "",
       });
     }
   }, [data]);
 
-  const [
-    updateUser,
-    {
-      data: updateUserData,
-      isLoading: updateUserIsLoading,
-      isError,
-      error,
-      isSuccess,
-    },
-  ] = useUpdateUserMutation();
+  const [updateUser, { isLoading: updateUserIsLoading, isSuccess, isError, error }] =
+    useUpdateUserMutation();
 
+  const changeEventHandler = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
+
+  const selectRole = (value) => {
+    setInput({ ...input, role: value });
+  };
 
   const onChangeHandler = (e) => {
     const file = e.target.files?.[0];
@@ -85,204 +71,151 @@ const Profile = () => {
 
   const updateUserHandler = async () => {
     const formData = new FormData();
-    formData.append("name", input.name);
-    formData.append("mobile", input.mobile);
-    formData.append("email", input.email);
-    formData.append("role", input.role);
-    formData.append("profilePhoto", profilePhoto);
+    Object.keys(input).forEach((key) => formData.append(key, input[key]));
+    if (profilePhoto) formData.append("profilePhoto", profilePhoto);
 
-    console.log("FormData sent:", [...formData]);
     await updateUser(formData);
-
   };
 
   useEffect(() => {
     if (isSuccess) {
       refetch();
-      toast.success(data.message || "Profile updated.");
+      toast.success("Profile updated successfully!");
     }
     if (isError) {
-      toast.error(error.message || "Failed to update profile");
+      toast.error(error?.message || "Failed to update profile");
     }
-  }, [error, updateUserData, isSuccess, isError]);
+  }, [isSuccess, isError, error]);
 
-  if (isLoading) return refetch(), <LoadingSpinner />;
+  if (isLoading) return <div className="text-center p-8">Loading...</div>;
 
-  const user = data && data.user;
-
-  // console.log(user);
+  const user = data?.user;
 
   return (
     <div className="items-center max-w-7xl mx-auto px-4 my-5">
       <h1 className="font-bold text-3xl text-center mb-5">MY PROFILE</h1>
-      <Card className="flex lg:flex-row md:flex-row sm:flex-col justify-center gap-8 p-2 rounded border">
-        <div className="items-center">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Avatar className="h-46 w-46">
+
+      <Card className="flex flex-col justify-center md:flex-row bg-gray-200 dark:bg-gray-800 items-center gap-8 p-6 rounded-lg border">
+        
+        {/* Avatar + Change Dialog */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Avatar className="h-32 w-32 md:h-40 md:w-40 cursor-pointer object-cover shadow-md hover:scale-105 transition-all">
+              <AvatarImage
+                src={user?.photoUrl || "https://github.com/shadcn.png"}
+                alt="profile"
+              />
+              <AvatarFallback>U</AvatarFallback>
+            </Avatar>
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Change Profile Photo</DialogTitle>
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+
+            <div className="flex flex-col items-center gap-4">
+              <Avatar className="h-28 w-28">
                 <AvatarImage
                   src={user?.photoUrl || "https://github.com/shadcn.png"}
-                  alt="@shadcn"
+                  alt="profile"
                 />
-                <AvatarFallback>A</AvatarFallback>
               </Avatar>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Change Profile</DialogTitle>
-                <DialogDescription>
-                </DialogDescription>
-              </DialogHeader>
-              <div className="justify-center">
-                <Avatar className="lg:h-100 lg:w-100 md:h-50 md:w-50 sm:h-50 sm:w-50 ml-7">
-                  <AvatarImage
-                    src={user?.photoUrl || "https://github.com/shadcn.png"}
-                    alt="@shadcn"
-                  />
-                </Avatar>
 
-                <div className="flex flex-row gap-4">
-                  <Label className={"w-30"}>Choose Photo</Label>
-                  <Input
-                    onChange={onChangeHandler}
-                    type="file"
-                    accept="image/*"
-                  />
-                </div>
+              <div className="w-full">
+                <Label>Choose Photo</Label>
+                <Input type="file" accept="image/*" onChange={onChangeHandler} />
               </div>
-              <DialogFooter>
-                <Button
-                  disabled={updateUserIsLoading}
-                  onClick={updateUserHandler}
-                >
-                  {updateUserIsLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                      wait
-                    </>
-                  ) : (
-                    "Update Photo"
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            </div>
 
-        </div>
-        <div className="mt-4">
-          <div>
-            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
-              Name:
-              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {user.name}
-              </span>
-            </h1>
-          </div>
-          <div className="mb-2">
-            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
-              Mobile No:
-              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {user.mobile}
-              </span>
-            </h1>
-          </div>
-          <div className="mb-2">
-            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
-              Email:
-              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {user.email}
-              </span>
-            </h1>
-          </div>
-          <div className="mb-2">
-            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
-              Role:
-              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {user.role.toUpperCase()}
-              </span>
-            </h1>
-          </div>
+            <DialogFooter>
+              <Button disabled={updateUserIsLoading} onClick={updateUserHandler}>
+                {updateUserIsLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                  </>
+                ) : (
+                  "Update Photo"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* User Details */}
+        <div className="flex flex-col gap-3 w-full md:w-auto">
+          <p className="text-lg font-semibold">
+            Name: <span className="font-normal">{user?.name}</span>
+          </p>
+          <p className="text-lg font-semibold">
+            Mobile: <span className="font-normal">{user?.mobile}</span>
+          </p>
+          <p className="text-lg font-semibold">
+            Email: <span className="font-normal">{user?.email}</span>
+          </p>
+          <p className="text-lg font-semibold">
+            Role: <span className="font-normal">{user?.role?.toUpperCase()}</span>
+          </p>
+
+          {/* Edit Profile Dialog */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button size="sm" className="mt-2 mb-2">
-                <Pencil />
-                Edit Profile
+              <Button size="sm" className="flex gap-2 w-fit mt-2">
+                <Pencil className="h-4 w-4" /> Edit Profile
               </Button>
             </DialogTrigger>
+
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Edit Profile</DialogTitle>
                 <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
+                  Update your profile details and click Save.
                 </DialogDescription>
               </DialogHeader>
-              <div className="flex flex-col justify-between gap-4 p-5">
-                <div className="space-y-2">
+
+              <div className="grid gap-4">
+                <div>
                   <Label>Name</Label>
-                  <Input
-                    type="text"
-                    name="name"
-                    value={input.name}
-                    onChange={changeEventHandler}
-                    placeholder="Name"
-                    className="col-span-3"
-                  />
+                  <Input name="name" value={input.name} onChange={changeEventHandler} />
                 </div>
-                <div className="space-y-2">
+                <div>
                   <Label>Mobile</Label>
                   <Input
-                    type="tel"
                     name="mobile"
                     maxLength={10}
                     value={input.mobile}
                     onChange={changeEventHandler}
-                    placeholder="9876543210"
-                    className="col-span-3"
                   />
                 </div>
-                <div className="space-y-2">
+                <div>
                   <Label>Email</Label>
-                  <Input
-                    type="text"
-                    name="email"
-                    value={input.email}
-                    onChange={changeEventHandler}
-                    placeholder="abc@gmail.com"
-                  />
+                  <Input name="email" value={input.email} onChange={changeEventHandler} />
                 </div>
-                <div className="space-y-2">
+                <div>
                   <Label>Role</Label>
-                  <Select
-                    value={input.role}
-                    onValueChange={selectRole}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
+                  <Select value={input.role} onValueChange={selectRole}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="Student">Student</SelectItem>
                         <SelectItem value="Trainer">Trainer</SelectItem>
-                        {
-                          user.role === "Admin" && (
-                            <SelectItem value="Admin">Admin</SelectItem>
-                          )
-                        }
+                        {user.role === "Admin" && (
+                          <SelectItem value="Admin">Admin</SelectItem>
+                        )}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
+
               <DialogFooter>
-                <Button
-                  disabled={updateUserIsLoading}
-                  onClick={updateUserHandler}
-                >
+                <Button disabled={updateUserIsLoading} onClick={updateUserHandler}>
                   {updateUserIsLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                      wait
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
                     </>
                   ) : (
                     "Save Changes"
@@ -293,26 +226,27 @@ const Profile = () => {
           </Dialog>
         </div>
       </Card>
-      {
-        user.role !== "Admin" && (
-          <div>
-            <h1 className="text-center text-lg font-bold my-8">MY ENROLLED COURSES</h1>
-            <Card >
+
+      {/* Enrolled Courses */}
+      {user.role !== "Admin" && (
+        <div className="mt-10">
+          <h1 className="text-center text-lg font-bold mb-6">MY ENROLLED COURSES</h1>
+
+          <Card className=" bg-gray-200 dark:bg-gray-800">
+            <CardContent className="p-4">
               {user.enrolledCourses.length === 0 ? (
-                <h1>You haven't enrolled yet</h1>
+                <p className="text-center py-6">You haven’t enrolled in any course yet.</p>
               ) : (
-                <>
-                  <CardContent className="grid grid-cols-1 lg:grid-cols-4 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {user.enrolledCourses.map((course) => (
-                      <Course course={course} key={course._id} />
-                    ))}
-                  </CardContent>
-                </>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                  {user.enrolledCourses.map((course) => (
+                    <Course key={course._id} course={course} />
+                  ))}
+                </div>
               )}
-            </Card>
-          </div>
-        )
-      }
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

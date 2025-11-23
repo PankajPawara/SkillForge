@@ -2,97 +2,104 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetPublishedCreatorCoursesQuery } from "@/features/api/courseApi";
 import React from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from "recharts";
 
 const Dashboard = () => {
-
   const { data, isLoading, isError } = useGetPublishedCreatorCoursesQuery();
 
-  if (isLoading) return <LoadingSpinner />
-  // if (isError) return <CourseNotFound />
-  // console.log(data);
+  if (isLoading) return <LoadingSpinner />;
 
-  const { publishedCourses, soldCourses } = data || [];
+  const { publishedCourses = [], soldCourses = [] } = data || {};
 
-  const courseData = soldCourses?.map((course) => ({
-    name: course.courseId.courseTitle,
-    price: course.courseId.coursePrice
-  }))
+  const courseData =
+    soldCourses?.map((course) => ({
+      name: course.courseId.courseTitle,
+      price: course.courseId.coursePrice,
+    })) || [];
 
-  const totalRevenue = soldCourses?.reduce((acc, element) => acc + (element.amount || 0), 0);
-  const totalPublishedCourses = publishedCourses?.length;
-  const totalSales = soldCourses?.length;
+  const totalRevenue = soldCourses?.reduce(
+    (acc, item) => acc + (item.amount || 0),
+    0
+  );
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row gap-5">
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 text-center w-full">
-          <CardHeader>
-            <CardTitle>Total Courses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-blue-600">{totalPublishedCourses || 0}</p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 text-center w-full">
-          <CardHeader>
-            <CardTitle>Total Sales</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-blue-600">{totalSales || 0}</p>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 text-center w-full">
-          <CardHeader>
-            <CardTitle>Total Revenue</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-blue-600">₹ {totalRevenue || 0}</p>
-          </CardContent>
-        </Card>
+    <div className="space-y-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <StatCard title="Total Courses" value={publishedCourses.length} />
+        <StatCard title="Total Sales" value={soldCourses.length} />
+        <StatCard title="Total Revenue" value={`₹ ${totalRevenue || 0}`} />
       </div>
 
-      {/* Course Prices Card */}
-      <div className="w-full">
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300 w-full">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold">
-              Course Prices
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
+      {/* Line Chart */}
+      <Card className=" bg-white dark:bg-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 w-full">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold">Course Prices</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <div className="w-full h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart data={courseData}>
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="var(--chart-grid)" // theme-aware
+                />
                 <XAxis
                   dataKey="name"
-                  stroke="#6b7280"
-                  angle={-30} // Rotated labels for better visibility
+                  stroke="gray"
+                  angle={-30}
+                  interval={0}
                   textAnchor="end"
-                  interval={0} // Display all labels
                 />
-                <YAxis stroke="#6b7280" />
+                <YAxis stroke="gray" />
                 <Tooltip
                   wrapperStyle={{
-                    backgroundColor: "#fff",
-                    color: "#000",
+                    backgroundColor: "var(--tooltip-bg)",
+                    color: "black",
+                    borderRadius: "6px",
+                    padding: "6px 10px",
                   }}
-                  formatter={(value, name) => [`₹${value}`, name]} />
+                  formatter={(value, name) => [`₹${value}`, name]}
+                />
                 <Line
                   type="monotone"
                   dataKey="price"
-                  stroke="#4a90e2" // Changed color to a different shade of blue
+                  stroke="gray"
                   strokeWidth={3}
-                  dot={{ stroke: "#4a90e2", strokeWidth: 2 }} // Same color for the dot
+                  dot={{
+                    stroke: "blue",
+                    strokeWidth: 2,
+                  }}
                 />
               </LineChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
+
+const StatCard = ({ title, value }) => (
+  <Card className=" bg-white dark:bg-gray-700 shadow-lg hover:shadow-xl transition-shadow duration-300 text-center w-full">
+    <CardHeader>
+      <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <p className="text-3xl font-bold text-blue-900 dark:text-blue-500">
+        {value}
+      </p>
+    </CardContent>
+  </Card>
+);
 
 export default Dashboard;

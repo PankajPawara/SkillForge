@@ -1,4 +1,4 @@
-import { ChartBar, SquareLibrary, Users, } from "lucide-react";
+import { ChartBar, SquareLibrary, Users } from "lucide-react";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
@@ -7,47 +7,62 @@ const Sidebar = () => {
   const { user } = useSelector((store) => store.auth);
 
   return (
-    <div className="flex flex-row">
-      {/* <div className="flex overflow-y-hidden"> */}
-      <div className="border-r w-40 h-screen">
-        <div className="space-y-4 fixed p-5 h-screen">
-          {user?.role === "Trainer" && (
-            <>
-              <Link to="dashboard" className="flex items-center gap-2">
-                <ChartBar size={15} />
-                <h1>Dashboard</h1>
-              </Link>
-              <Link to="course" className="flex items-center gap-2">
-                <SquareLibrary size={15} />
-                <h1>Courses</h1>
-              </Link>
-            </>
-          )}
+    <div className="flex min-h-screen">
 
-          {user?.role === "Admin" && (
-            <>
-              <Link to="dashboard" className="flex items-center gap-2">
-                <ChartBar size={15} />
-                <h1>Analytics</h1>
-              </Link>
+      {/* SIDEBAR */}
+      <aside
+        className="
+          w-48 
+          border-r 
+          p-5 
+          space-y-4 
+          hidden 
+          sm:block 
+          bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
+          shadow-lg
+          fixed 
+          left-0 
+          h-screen
+        "
+      >
+        {user?.role === "Trainer" && (
+          <>
+            <Link to="dashboard" className="flex items-center gap-2 hover:text-blue-600">
+              <ChartBar size={16} />
+              <span>Dashboard</span>
+            </Link>
 
-              <Link to="manage-users" className="flex items-center gap-2">
-                <Users size={15} />
-                <h1>Manage Users</h1>
-              </Link>
+            <Link to="course" className="flex items-center gap-2 hover:text-blue-600">
+              <SquareLibrary size={16} />
+              <span>Courses</span>
+            </Link>
+          </>
+        )}
 
-              <Link to="manage-courses" className="flex items-center gap-2">
-                <SquareLibrary size={15} />
-                <h1>Manage Courses</h1>
-              </Link>
-            </>
-          )}
-        </div>
-        {/* </div> */}
-      </div>
-      <div className="flex-1 mx-auto p-10">
+        {user?.role === "Admin" && (
+          <>
+            <Link to="dashboard" className="flex items-center gap-2 hover:text-blue-600">
+              <ChartBar size={16} />
+              <span>Analytics</span>
+            </Link>
+
+            <Link to="manage-users" className="flex items-center gap-2 hover:text-blue-600">
+              <Users size={16} />
+              <span>Manage Users</span>
+            </Link>
+
+            <Link to="manage-courses" className="flex items-center gap-2 hover:text-blue-600">
+              <SquareLibrary size={16} />
+              <span>Manage Courses</span>
+            </Link>
+          </>
+        )}
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main className="flex-1 p-5 ml-48 sm:p-10 overflow-y-auto">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

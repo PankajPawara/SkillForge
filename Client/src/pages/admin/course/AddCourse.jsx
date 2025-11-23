@@ -43,7 +43,7 @@ const AddCourse = () => {
   }, [isSuccess, error])
 
   return (
-    <div className="flex-1 mx-10">
+    <div className="flex-1 mx-10 bg">
       <div className="flex mb-4 gap-2">
         <Button size="icon" variant="outline" className="rounded-full" onClick={() => history.back()}>
           <ArrowLeft />
@@ -57,7 +57,7 @@ const AddCourse = () => {
           </p>
         </div>
       </div>
-      <Card className="flex flex-col justify-center space-y-4 p-10">
+      <Card className="flex flex-col bg-white dark:bg-gray-700 justify-center space-y-4 p-10">
         <div className="space-y-2 space-x-1">
           <Label>Title</Label>
           <Input

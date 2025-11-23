@@ -68,12 +68,12 @@ const SearchPage = () => {
         )}
       </div>
 
-      <div className="flex flex-row gap-5 ">
+      <div className="flex flex-row gap-5">
         {/* <div className="flex-0 border p-5 rounded">
         </div> */}
           <Filter handleFilterChange={handleFilterChange} />
         <Separator orientation="vertical" />
-        <Card className="flex-1 border p-5 rounded shadow">
+        <Card className="flex-1 bg-white dark:bg-gray-700 border p-5 rounded-lg shadow">
           {isLoading ? (
             Array.from({ length: 3 }).map((_, idx) => (
               <CourseSkeleton key={idx} />

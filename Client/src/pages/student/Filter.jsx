@@ -51,7 +51,7 @@ const Filter = ({ handleFilterChange }) => {
   };
 
   return (
-    <Card className="w-full md:w-[20%] border p-5 rounded shadow">
+    <Card className="w-full md:w-[20%]  bg-white dark:bg-gray-700 border p-5 rounded-lg shadow">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-lg ">Filter Options</h1>
         <Select onValueChange={selectByPriceHandler}>
