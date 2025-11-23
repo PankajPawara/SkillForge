@@ -47,14 +47,15 @@ const CourseTab = () => {
 
     const [deleteCourse] = useDeleteCourseMutation();
 
-    const handleDelete = async () => {
+    const handleDelete = async (courseId) => {
         if (!confirm("This action cannot be undone. This will permanently delete the course, including all lectures and videos. Are you sure you want to proceed?")) {
             return;
         }
 
         try {
-            const res = await deleteCourse(course._id).unwrap();
+            const res = await deleteCourse(courseId).unwrap();
             toast.success(res.message || "Course deleted successfully");
+            navigate(-1);
         } catch (err) {
             toast.error(err.data?.message || "Failed to delete course");
         }
@@ -170,7 +171,7 @@ const CourseTab = () => {
                         {courseByIdData?.course.isPublished ? "Unpublish" : "Publish"}
                     </Button>
 
-                    <Button variant="destructive" onClick={handleDelete}
+                    <Button variant="destructive" onClick={() => handleDelete(courseId)}
                         className="bg-red-500 dark:bg-red-700 hover:bg-red-600 dark:hover:bg-red-600">
                         <Trash2 /> Delete Course</Button>
                 </div>

@@ -117,7 +117,7 @@ export const courseApi = createApi({
       }),
     }),
 
-    removeLecture: builder.mutation({
+    deleteLecture: builder.mutation({
       query: (lectureId) => ({
         url: `/lecture/${lectureId}`,
         method: "DELETE",
@@ -151,7 +151,7 @@ export const {
   useCreateLectureMutation,
   useGetCourseLectureQuery,
   useEditLectureMutation,
-  useRemoveLectureMutation,
+  useDeleteLectureMutation,
   useGetLectureByIdQuery,
   usePublishCourseMutation,
   useGetPublishedCreatorCoursesQuery,

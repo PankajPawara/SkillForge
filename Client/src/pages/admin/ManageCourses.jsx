@@ -35,16 +35,6 @@ const ManageCourses = () => {
     }
   };
 
-    const handleTogglePublish = async (courseId) => {
-    try {
-      await togglePublish(courseId).unwrap();
-      toast.success("Course status updated");
-      refetch();
-    } catch (err) {
-      toast.error(err?.data?.message || "Failed to update status");
-    }
-  };
-
   if (isLoading)
     return (
       <div className="flex justify-center mt-10">

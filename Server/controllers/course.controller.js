@@ -298,7 +298,7 @@ export const editLecture = async (req, res) => {
         })
     }
 }
-export const removeLecture = async (req, res) => {
+export const deleteLecture = async (req, res) => {
     try {
         const { lectureId } = req.params;
         const lecture = await Lecture.findByIdAndDelete(lectureId);

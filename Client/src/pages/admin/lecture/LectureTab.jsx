@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   useEditLectureMutation,
   useGetLectureByIdQuery,
-  useRemoveLectureMutation
+  useDeleteLectureMutation
 } from "@/features/api/courseApi";
 import axios from "axios";
 import { Loader2, Trash2 } from "lucide-react";
@@ -51,9 +51,9 @@ const LectureTab = () => {
     useEditLectureMutation();
 
   const [
-    removeLecture,
-    { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }
-  ] = useRemoveLectureMutation();
+    deleteLecture,
+    { data: deleteData, isLoading: deleteLoading, isSuccess: deleteSuccess }
+  ] = useDeleteLectureMutation();
 
   // -----------------------------
   // VIDEO UPLOAD HANDLER
@@ -122,16 +122,16 @@ const LectureTab = () => {
   // -----------------------------
   // DELETE LECTURE HANDLER
   // -----------------------------
-  const removeLectureHandler = async () => {
-    await removeLecture({ courseId, lectureId });
+  const deleteLectureHandler = async () => {
+    await deleteLecture(lectureId );
   };
 
   useEffect(() => {
-    if (removeSuccess) {
-      toast.success(removeData.message);
+    if (deleteSuccess) {
+      toast.success(deleteData.message);
       navigate(-1); // go back after delete
     }
-  }, [removeSuccess]);
+  }, [deleteSuccess]);
 
   return (
     <Card className="w-full bg-white dark:bg-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl">
@@ -141,12 +141,12 @@ const LectureTab = () => {
           <CardDescription>Make changes and click save when done.</CardDescription>
         </div>
 
-        <Button disabled={removeLoading} 
+        <Button disabled={deleteLoading} 
         variant="destructive" 
-        onClick={removeLectureHandler}
+        onClick={deleteLectureHandler}
         className="bg-red-600 hover:bg-red-800 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800"
         >
-          {removeLoading ? (
+          {deleteLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Please wait
