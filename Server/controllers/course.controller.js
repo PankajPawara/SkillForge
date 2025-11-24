@@ -2,6 +2,8 @@
 import { Course } from "../models/course.model.js";
 import { CoursePurchase } from "../models/coursePurchase.model.js";
 import { Lecture } from "../models/lecture.model.js";
+import { User } from "../models/user.model.js";
+import { CourseProgress } from "../models/courseProgress.model.js"; 
 import {
     deleteMediaFromCloudinary,
     deleteVideoFromCloudinary,
@@ -301,33 +303,39 @@ export const editLecture = async (req, res) => {
 export const deleteLecture = async (req, res) => {
     try {
         const { lectureId } = req.params;
+
+        // Find & delete the lecture from DB
         const lecture = await Lecture.findByIdAndDelete(lectureId);
         if (!lecture) {
             return res.status(404).json({
                 message: "Lecture not found!"
             });
         }
-        // delete the lecture from couldinary as well
+
+        // Delete Cloudinary video if exists
         if (lecture.publicId) {
             await deleteVideoFromCloudinary(lecture.publicId);
         }
 
-        // Remove the lecture reference from the associated course
-        await Course.updateOne(
-            { lectures: lectureId }, // find the course that contains the lecture
-            { $pull: { lectures: lectureId } } // Remove the lectures id from the lectures array
+        // Remove lecture reference from ALL courses
+        await Course.updateMany(
+            { lectures: lectureId },
+            { $pull: { lectures: lectureId } }
         );
 
+        console.log("Lecture deleted successfully.");
         return res.status(200).json({
             message: "Lecture removed successfully."
-        })
+        });
+
     } catch (error) {
-        console.log(error);
+        console.log("Failed to remove lecture:", error);
         return res.status(500).json({
             message: "Failed to remove lecture"
-        })
+        });
     }
-}
+};
+
 export const getLectureById = async (req, res) => {
     try {
         const { lectureId } = req.params;
@@ -350,7 +358,6 @@ export const getLectureById = async (req, res) => {
 
 
 // publich unpublish course logic
-
 export const togglePublishCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
@@ -378,47 +385,54 @@ export const togglePublishCourse = async (req, res) => {
 }
 export const deleteCourse = async (req, res) => {
     try {
-        const { courseId } = req.params;
-
-        // Fetch course
-        const course = await Course.findById(courseId).populate("lectures");
+        const courseId = req.params.courseId;
+        
+        const course = await Course.findById(courseId);
         if (!course) {
-            return res.status(404).json({
-                message: "Course not found!"
-            });
+          return res.status(404).json({ message: "Course not found" });
         }
-
-        // Delete course thumbnail from Cloudinary (if exists)
+    
+        //  DELETE COURSE THUMBNAIL FROM CLOUDINARY
         if (course.courseThumbnail) {
-            const publicId = course.courseThumbnail.split("/").pop().split(".")[0];
-            await deleteMediaFromCloudinary(publicId);
+          const publicId = course.courseThumbnail.split("/").pop().split(".")[0];
+          await deleteMediaFromCloudinary(publicId);
         }
-
-        // Delete all lectures & their Cloudinary videos
-        for (const lecture of course.lectures) {
-            // delete video from cloudinary if exists
-            if (lecture.publicId) {
-                await deleteVideoFromCloudinary(lecture.publicId);
-            }
-            // delete lecture from DB
-            await Lecture.findByIdAndDelete(lecture._id);
+    
+        //  DELETE ALL LECTURE MEDIA AND DOCUMENTS
+        const lectures = await Lecture.find({ _id: { $in: course.lectures } });
+    
+        for (const lecture of lectures) {
+          if (lecture.publicId) {
+            await deleteVideoFromCloudinary(lecture.publicId);
+          }
         }
-
-        // Delete course purchases (optional but recommended)
+    
+        // DELETE LECTURE DOCUMENTS FROM DB
+        await Lecture.deleteMany({ _id: { $in: course.lectures } });
+    
+        //  REMOVE COURSE FROM USERS' ENROLLED LIST
+        await User.updateMany(
+          { enrolledCourses: courseId },
+          { $pull: { enrolledCourses: courseId } }
+        );
+    
+        //  DELETE PURCHASE RECORDS
         await CoursePurchase.deleteMany({ courseId });
-
-        // Finally delete the course
-        await Course.findByIdAndDelete(courseId);
-
+    
+        //  DELETE PROGRESS RECORDS
+        await CourseProgress.deleteMany({ courseId });
+    
+        //  DELETE COURSE ITSELF
+        await course.deleteOne();
+    
         return res.status(200).json({
-            message: "Course deleted successfully."
+          success: true,
+          message: "Course deleted successfully with all associated data",
         });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message: "Failed to delete course"
-        });
-    }
+    
+      } catch (error) {
+        console.error("Failed to delete course:", error);
+        return res.status(500).json({ message: "Failed to delete course" });
+      }
 };
 

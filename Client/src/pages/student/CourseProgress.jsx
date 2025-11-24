@@ -142,7 +142,7 @@ const CourseProgress = () => {
             shadow-lg 
           "
         >
-          <h2 className="font-semibold text-xl mb-4 dark:text-gray-100">
+          <h2 className="font-semibold text-xl md:my-2 mx-auto dark:text-gray-100">
             Course Lectures
           </h2>
 

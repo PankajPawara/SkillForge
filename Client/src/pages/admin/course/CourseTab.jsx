@@ -1,3 +1,4 @@
+import ConfirmDialog from "@/components/ConfirmDialog";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,7 +34,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const CourseTab = () => {
-
+    const [open, setOpen] = useState(false);
     const [input, setInput] = useState({
         courseTitle: "",
         subTitle: "",
@@ -47,10 +48,7 @@ const CourseTab = () => {
     const [deleteCourse] = useDeleteCourseMutation();
 
     const handleDelete = async (courseId) => {
-        if (!confirm("This action cannot be undone. This will permanently delete the course, including all lectures and videos. Are you sure you want to proceed?")) {
-            return;
-        }
-
+        setOpen(false);
         try {
             const res = await deleteCourse(courseId).unwrap();
             toast.success(res.message || "Course deleted successfully");
@@ -64,7 +62,6 @@ const CourseTab = () => {
     const courseId = params.courseId;
     const { data: courseByIdData, isLoading: courseByIdLoading, refetch } =
         useGetCourseByIdQuery(courseId);
-
     const [publishCourse, { }] = usePublishCourseMutation();
 
     useEffect(() => {
@@ -170,9 +167,18 @@ const CourseTab = () => {
                         {courseByIdData?.course.isPublished ? "Unpublish" : "Publish"}
                     </Button>
 
-                    <Button variant="destructive" onClick={() => handleDelete(courseId)}
+                    <Button variant="destructive" onClick={() => setOpen(true)}
                         className="bg-red-500 dark:bg-red-700 hover:bg-red-600 dark:hover:bg-red-600">
-                        <Trash2 /> Delete Course</Button>
+                        <Trash2 /> Delete Course
+                    </Button>
+                    <ConfirmDialog
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        onConfirm={() => handleDelete(courseId)}
+                        title="Are you sure you want to delete this Course?"
+                        message="This will remove the course, all lectures, and purchased records. This action cannot be undone."
+                        confirmText="Delete Course"
+                    />
                 </div>
             </CardHeader>
 
@@ -185,7 +191,7 @@ const CourseTab = () => {
                         <Input
                             type="text"
                             name="courseTitle"
-                            value={input.courseTitle}
+                            value={input.courseTitle || ""}
                             onChange={changeEventHandler}
                             placeholder="Ex. Fullstack developer"
                         />
@@ -197,7 +203,7 @@ const CourseTab = () => {
                         <Input
                             type="text"
                             name="subTitle"
-                            value={input.subTitle}
+                            value={input.subTitle || ""}
                             onChange={changeEventHandler}
                             placeholder="Ex. Become a Fullstack developer from zero to hero"
                         />
@@ -208,10 +214,10 @@ const CourseTab = () => {
                         <Label>Description</Label>
                         <textarea
                             name="description"
-                            value={input.description}
+                            value={input.description || ""}
                             onChange={changeEventHandler}
                             placeholder="Ex. This course covers the basics of fullstack development."
-                            className="w-full p-2 border rounded-md h-32 overflow-y-auto resize-none"
+                            className="w-full p-2 border rounded-md h-32 overflow-y-auto resize-none focus:outline-none focus:ring-2 focus:ring-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500"
                         />
                     </div>
 
@@ -246,7 +252,7 @@ const CourseTab = () => {
                         {/* Course Level */}
                         <div className="space-y-1">
                             <Label>Course Level</Label>
-                            <Select value={input.courseLevel} onValueChange={selectCourseLevel}>
+                            <Select value={input.courseLevel || ""} onValueChange={selectCourseLevel}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select level" />
                                 </SelectTrigger>
@@ -266,7 +272,7 @@ const CourseTab = () => {
                             <Input
                                 type="number"
                                 name="coursePrice"
-                                value={input.coursePrice}
+                                value={input.coursePrice || ""}
                                 onChange={changeEventHandler}
                                 placeholder="199"
                             />

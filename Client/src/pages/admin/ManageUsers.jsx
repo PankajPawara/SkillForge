@@ -43,6 +43,7 @@ import {
 
 import { Card } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 const ManageUsers = () => {
   const { data, isLoading, refetch } = useGetAllUsersQuery();
@@ -51,12 +52,16 @@ const ManageUsers = () => {
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const [editUser, setEditUser] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const handleDelete = async (userId) => {
-    if (confirm("Are you sure you want to delete this user?")) {
-      await deleteUser(userId);
-      toast.success("User deleted");
+    setOpen(false);
+    try {
+      const res = await deleteUser(userId);
+      toast.success(res.message || "User deleted successfully");
       refetch();
+    } catch (err) {
+      toast.error(err.data?.message || "Failed to delete user");
     }
   };
 
@@ -225,12 +230,19 @@ const ManageUsers = () => {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleDelete(user._id)}
+                      onClick={() => setOpen(true)}
                       className="flex gap-1 bg-red-600 dark:bg-red-700  hover:bg-red-700 dark:hover:bg-red-800"
                     >
                       <Trash2 size={16} /> Delete
                     </Button>
-
+                    <ConfirmDialog
+                      open={open}
+                      onClose={() => setOpen(false)}
+                      onConfirm={() => handleDelete(user._id)}
+                      title="Are you sure you want to delete this Course?"
+                      message="This will remove the course, all lectures, and purchased records. This action cannot be undone."
+                      confirmText="Delete Course"
+                    />
                   </TableCell>
                 </TableRow>
               ))}

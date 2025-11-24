@@ -1,3 +1,4 @@
+import ConfirmDialog from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,6 +31,7 @@ const LectureTab = () => {
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [btnDisable, setBtnDisable] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -55,9 +57,7 @@ const LectureTab = () => {
     { data: deleteData, isLoading: deleteLoading, isSuccess: deleteSuccess }
   ] = useDeleteLectureMutation();
 
-  // -----------------------------
   // VIDEO UPLOAD HANDLER
-  // -----------------------------
   const fileChangeHandler = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -101,9 +101,7 @@ const LectureTab = () => {
     }
   };
 
-  // -----------------------------
   // UPDATE LECTURE HANDLER
-  // -----------------------------
   const editLectureHandler = async () => {
     await editLecture({
       lectureTitle,
@@ -119,11 +117,16 @@ const LectureTab = () => {
     if (error) toast.error(error.data.message);
   }, [isSuccess, error]);
 
-  // -----------------------------
   // DELETE LECTURE HANDLER
-  // -----------------------------
   const deleteLectureHandler = async () => {
-    await deleteLecture(lectureId );
+    setOpen(false);
+    try {
+      const response = await deleteLecture(lectureId);
+      toast.success(response.message || "Lecture deleted successfully");
+      navigate(-1);
+    } catch (err) {
+      toast.error(err.data?.message || "Failed to delete lecture");
+    }
   };
 
   useEffect(() => {
@@ -141,10 +144,10 @@ const LectureTab = () => {
           <CardDescription>Make changes and click save when done.</CardDescription>
         </div>
 
-        <Button disabled={deleteLoading} 
-        variant="destructive" 
-        onClick={deleteLectureHandler}
-        className="bg-red-600 hover:bg-red-800 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800"
+        <Button disabled={deleteLoading}
+          variant="destructive"
+          onClick={() => setOpen(true)}
+          className="bg-red-600 hover:bg-red-800 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800"
         >
           {deleteLoading ? (
             <>
@@ -157,6 +160,14 @@ const LectureTab = () => {
             </>
           )}
         </Button>
+        <ConfirmDialog
+          open={open}
+          onClose={() => setOpen(false)}
+          onConfirm={() => deleteLectureHandler()}
+          title="Are you sure you want to delete this Lecture?"
+          message="This will remove the lecture and this action cannot be undone."
+          confirmText="Delete Lecture"
+        />
       </CardHeader>
 
       <CardContent>
@@ -180,7 +191,7 @@ const LectureTab = () => {
             type="file"
             accept="video/*"
             onChange={fileChangeHandler}
-            
+
           />
 
           {uploadVideoInfo?.videoUrl ? (

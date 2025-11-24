@@ -38,14 +38,14 @@ const AddCourse = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success(data?.message || "Course created.");
-      navigate("/admin/course");
+      navigate(-1);
     }
   }, [isSuccess, error])
 
   return (
     <div className="flex-1 mx-10 bg">
       <div className="flex mb-4 gap-2">
-        <Button size="icon" variant="outline" className="rounded-full" onClick={() => history.back()}>
+        <Button size="icon" variant="outline" className="rounded-full" onClick={() => navigate(-1)}>
           <ArrowLeft />
         </Button>
         <div>
@@ -98,7 +98,7 @@ const AddCourse = () => {
           </Select>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => history.back()}>
+          <Button variant="outline" onClick={() => navigate(-1)}>
             Back
           </Button>
           <Button disabled={isLoading} onClick={createCourseHandler}>

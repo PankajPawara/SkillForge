@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useGetAllCoursesQuery,
   useDeleteCourseMutation,
@@ -18,21 +18,24 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 const ManageCourses = () => {
   const { data, isLoading, isError, refetch } = useGetAllCoursesQuery();
   const [deleteCourse] = useDeleteCourseMutation();
   const [togglePublish] = useTogglePublishCourseMutation();
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
   const handleDelete = async (courseId) => {
+    setOpen(false);
     try {
-      await deleteCourse(courseId).unwrap();
-      toast.success("Course deleted successfully");
+      const res = await deleteCourse(courseId).unwrap();
+      toast.success(res.message || "Course deleted successfully");
       refetch();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to delete course");
+      toast.error(err.data?.message || "Failed to delete course");
     }
   };
 
@@ -96,11 +99,20 @@ const ManageCourses = () => {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleDelete(course._id)}
+                      onClick={() => setOpen(true)}
                       className="bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800"
                     >
                       <Trash2 size={16} className="mr-1" /> Delete
                     </Button>
+
+                    <ConfirmDialog
+                      open={open}
+                      onClose={() => setOpen(false)}
+                      onConfirm={() => handleDelete(course._id)}
+                      title="Are you sure you want to delete this Course?"
+                      message="This will remove the course, all lectures, and purchased records. This action cannot be undone."
+                      confirmText="Delete Course"
+                    />
                   </TableCell>
                 </TableRow>
               ))}

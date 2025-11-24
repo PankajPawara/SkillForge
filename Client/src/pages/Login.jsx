@@ -89,8 +89,8 @@ const Login = () => {
     if (registerError) {
       toast.error(registerError.data.message || "Signup failed.");
     }
-    if (loginIsSuccess && loginData) {
-      toast.success(loginData.message || "Login Successful.");
+    if (loginIsSuccess) {
+      toast.success("Login Successful.");
       refetch();
       navigate("/");
     }
