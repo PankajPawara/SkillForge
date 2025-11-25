@@ -1,4 +1,4 @@
-import { ChartBar, Info, LogOut, LucideLayoutDashboard, LucidePlaySquare, LucideTvMinimalPlay, Menu, School, SquareLibrary, User, Users } from "lucide-react";
+import { ChartBar, Info, LogOut, LucideLayoutDashboard, LucidePlaySquare, Menu, School, SquareLibrary, User, Users } from "lucide-react";
 import React, { useEffect } from "react";
 import {
     DropdownMenu,
@@ -12,30 +12,19 @@ import {
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import DarkMode from "@/DarkMode";
-import {
-    Sheet,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "./ui/sheet";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
-import { useLogoutUserMutation, useLoadUserQuery, } from "@/features/api/authApi.js";
+import { useLogoutUserMutation, useLoadUserQuery } from "@/features/api/authApi.js";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { Description } from "@radix-ui/react-dialog";
-// import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Navbar = () => {
 
-    const { data: userData, isLoading, refetch } = useLoadUserQuery();
-
+    const { data: userData, isLoading } = useLoadUserQuery();
     const { user } = useSelector((store) => store.auth);
-    const [logoutUser, { data, isSuccess, isLoading: logoutLoading }] = useLogoutUserMutation();
+
+    const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
     const navigate = useNavigate();
-    // const dispatch = useDispatch();
 
     const logoutHandler = async () => {
         await logoutUser();
@@ -43,115 +32,102 @@ const Navbar = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            refetch();
+            toast.success(data?.message || "Logged out successfully");
             navigate("/login");
-            toast.success(data?.message || "User log out.");
         }
+    }, [isSuccess]);
 
-    }, [isSuccess, userData]);
 
-    // if (isLoading) return <LoadingSpinner />;
+    // Block navbar UI until user loads (prevents redirect issues)
+    if (isLoading) {
+        return (
+            <div className="h-16 flex items-center justify-center bg-gray-100 dark:bg-gray-700 shadow-lg">
+                <LoadingSpinner />
+            </div>
+        );
+    }
+
     return (
         <div className="h-16 dark:bg-gray-700 bg-gray-100 shadow-lg fixed top-0 left-0 right-0 duration-300 z-10">
-            {/* Desktop */}
             <div className="max-w-7xl mx-auto flex justify-between items-center gap-10 h-full p-4">
+
+                {/* Logo */}
                 <div>
-                    <Link to="/" className="flex flex-row items-center gap-2">
-                        <School size={"30"} />
-                        <h1 className="block font-extrabold text-2xl">SkillForge </h1>
+                    <Link to="/" className="flex flex-row items-center gap-2 cursor-pointer">
+                        <School size={30} />
+                        <h1 className="font-extrabold text-2xl">SkillForge</h1>
                     </Link>
                 </div>
-                {/* User icons and Dark mode icon */}
-                <div className='flex items-center gap-2'>
-                    <DarkMode />
-                    {
-                        user ? (
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Avatar className="h-10 w-10">
-                                        <AvatarImage
-                                            src={user?.photoUrl || "https://github.com/shadcn.png"}
-                                            alt="@shadcn" />
-                                        <AvatarFallback>CN</AvatarFallback>
-                                    </Avatar>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-45 bg-white dark:bg-gray-800" align="end" side="bottom">
-                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem>
-                                            <Link to="profile" className="flex items-center gap-2">
-                                                <User size={15} />
-                                                <h1>My Profile</h1>
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        {user?.role === "Admin" && (
-                                            <>
-                                                <DropdownMenuItem>
-                                                    <Link to="admin/dashboard" className="flex items-center gap-2">
-                                                        <LucideLayoutDashboard size={15} />
-                                                        <h1>Dashboard</h1>
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                            </>
-                                        )}
-                                        {
-                                            user?.role === "Trainer" && (
-                                                <>
-                                                    <Link to="trainer/dashboard" className="flex items-center gap-2">
-                                                        <DropdownMenuItem>
-                                                            <LucideLayoutDashboard size={15} />
-                                                            Dashboard
-                                                        </DropdownMenuItem>
-                                                    </Link>
-                                                </>
-                                            )
-                                        }
 
-                                        {
-                                            user?.role != "Admin" && (
-                                                <>
-                                                    <DropdownMenuItem>
-                                                        <Link to="my-learning" className="flex items-center gap-2">
-                                                            <LucidePlaySquare size={15} />
-                                                            My Learning
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                </>
-                                            )
-                                        }
-                                    </DropdownMenuGroup>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem>
-                                        <Link to="about" className="flex items-center gap-2">
-                                            <Info size={15} />
-                                            About
-                                        </Link>
+                {/* Icons */}
+                <div className="flex items-center gap-2">
+                    <DarkMode />
+
+                    {user ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Avatar className="h-10 w-10 cursor-pointer">
+                                    <AvatarImage src={user?.photoUrl || "https://github.com/shadcn.png"} />
+                                    <AvatarFallback>SN</AvatarFallback>
+                                </Avatar>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent className="w-45 bg-white dark:bg-gray-800" align="end">
+                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuGroup>
+
+                                    <DropdownMenuItem onClick={() => navigate("/profile")}
+                                        className="flex items-center gap-2 cursor-pointer">
+                                        <User size={15} /> My Profile
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={logoutHandler}>
-                                        <div className="flex items-center gap-2">
-                                            <LogOut size={15} />
-                                            Logout
-                                        </div>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        ) : (
-                            <div className="flex items-center gap-2">
-                                <Button variant="outline" onClick={() => navigate("/login")}>
-                                    Login
-                                </Button>
-                                <Button onClick={() => navigate("/login")} className="hidden md:flex">
-                                    Signup
-                                </Button>
-                            </div>
-                        )
-                    }
+
+                                    {user?.role === "Admin" && (
+                                        <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}
+                                            className="flex items-center gap-2 cursor-pointer">
+                                            <LucideLayoutDashboard size={15} /> Dashboard
+                                        </DropdownMenuItem>
+                                    )}
+
+                                    {user?.role === "Trainer" && (
+                                        <DropdownMenuItem onClick={() => navigate("/trainer/dashboard")}
+                                            className="flex items-center gap-2 cursor-pointer">
+                                            <LucideLayoutDashboard size={15} /> Dashboard
+                                        </DropdownMenuItem>
+                                    )}
+
+                                    {user?.enrolledCourses > 0 && (
+                                        <DropdownMenuItem onClick={() => navigate("/my-learning")}
+                                            className="flex items-center gap-2 cursor-pointer">
+                                            <LucidePlaySquare size={15} /> My Learning
+                                        </DropdownMenuItem>
+                                    )}
+                                </DropdownMenuGroup>
+
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem onClick={() => navigate("/about")}
+                                    className="flex items-center gap-2 cursor-pointer">
+                                    <Info size={15} /> About
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem onClick={logoutHandler}
+                                    className="flex items-center gap-2 cursor-pointer">
+                                    <LogOut size={15} /> Logout
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <Button variant="outline" onClick={() => navigate("/login")}>Login</Button>
+                            <Button onClick={() => navigate("/signup")} className="hidden md:flex">Signup</Button>
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
 export default Navbar;
-

@@ -13,12 +13,16 @@ import {
 } from "@/components/ui/table";
 import { useGetCreatorCourseQuery } from "@/features/api/courseApi";
 import { Edit, Lock, PlusCircle, Verified } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CourseTable = () => {
-  const { data, isLoading } = useGetCreatorCourseQuery();
+  const { refetch, data, isLoading } = useGetCreatorCourseQuery();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    refetch();
+  }, [data]);
 
   if (isLoading) return <LoadingSpinner></LoadingSpinner>
   // console.log("data: ", data);
@@ -52,7 +56,7 @@ const CourseTable = () => {
           </TableHeader>
 
           <TableBody>
-            {data.courses.map((course) => (
+            {data?.courses.length > 0 ? data.courses.map((course) => (
               <TableRow key={course._id}>
 
                 {/* Title */}
@@ -92,7 +96,11 @@ const CourseTable = () => {
                 </TableCell>
 
               </TableRow>
-            ))}
+            ))
+              : (
+                <div className="flex flex-col items-center justify-center">
+                  <EmptyState /></div>)
+            }
           </TableBody>
         </Table>
       </div>
@@ -102,3 +110,29 @@ const CourseTable = () => {
 };
 
 export default CourseTable;
+
+const EmptyState = () => (
+  <div className="flex flex-col items-center justify-center text-center py-20">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-20 w-20 text-gray-400 dark:text-gray-600 mb-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.3}
+        d="M12 8c1.657 0 3-.895 3-2s-1.343-2-3-2-3 .895-3 2 1.343 2 3 2zM5.5 18c0-2.485 2.239-4.5 5-4.5s5 2.015 5 4.5M19 10h2m-1-1v2m-7-2h.01M4 10h.01M6.5 6.5l.01.01"
+      />
+    </svg>
+
+    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      No Courses found
+    </h2>
+    <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-md">
+      We couldn’t load the courses. Please try again later.
+    </p>
+  </div>
+);

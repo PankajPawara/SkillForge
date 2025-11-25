@@ -42,7 +42,6 @@ const MyLearningSkeleton = () => (
   </div>
 );
 
-/* ---------------- EMPTY STATE ---------------- */
 const EmptyState = () => (
   <div className="flex flex-col items-center justify-center text-center py-20">
     <svg

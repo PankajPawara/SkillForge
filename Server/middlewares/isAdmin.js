@@ -1,8 +1,6 @@
 
 const isAdmin = (req, res, next) => {
 
-  console.log("req:",req.user);
-  
   // Ensure user object exists (set by authentication middleware)
   if (!req.user || !req.user.role) {
     return res.status(401).json({

@@ -95,8 +95,8 @@ const Profile = () => {
     <div className="items-center max-w-7xl mx-auto px-4 my-5">
       <h1 className="font-bold text-3xl text-center mb-5">MY PROFILE</h1>
 
-      <Card className="flex flex-col justify-center md:flex-row bg-gray-200 dark:bg-gray-800 items-center gap-8 p-6 rounded-lg border">
-        
+      <Card className="flex flex-col justify-center md:flex-row bg-white dark:bg-gray-700 items-center gap-8 p-6 rounded-lg border">
+
         {/* Avatar + Change Dialog */}
         <Dialog>
           <DialogTrigger asChild>
@@ -166,7 +166,7 @@ const Profile = () => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="dark:bg-gray-700">
               <DialogHeader>
                 <DialogTitle>Edit Profile</DialogTitle>
                 <DialogDescription>
@@ -228,7 +228,7 @@ const Profile = () => {
       </Card>
 
       {/* Enrolled Courses */}
-      {user.role !== "Admin" && (
+      {user.enrolledCourses > 0 && (
         <div className="mt-10">
           <h1 className="text-center text-lg font-bold mb-6">MY ENROLLED COURSES</h1>
 

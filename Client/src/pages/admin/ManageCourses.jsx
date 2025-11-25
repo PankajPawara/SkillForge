@@ -23,7 +23,6 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 const ManageCourses = () => {
   const { data, isLoading, isError, refetch } = useGetAllCoursesQuery();
   const [deleteCourse] = useDeleteCourseMutation();
-  const [togglePublish] = useTogglePublishCourseMutation();
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();

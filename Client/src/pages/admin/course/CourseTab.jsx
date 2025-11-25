@@ -135,7 +135,7 @@ const CourseTab = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            toast.success(data.message || "Course update.");
+            toast.success(data.message || "Course updated");
         }
         if (error) {
             toast.error(error.data.message || "Failed to update course");

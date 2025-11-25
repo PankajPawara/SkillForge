@@ -82,29 +82,32 @@ const Login = () => {
   };
 
   useEffect(() => {
-    toast.dismiss();
     if (registerIsSuccess && registerData) {
       toast.success(registerData.message || "Signup Successful.");
     }
+
     if (registerError) {
-      toast.error(registerError.data.message || "Signup failed.");
+      toast.error(registerError.data?.message || "Signup failed.");
     }
-    if (loginIsSuccess) {
-      toast.success("Login Successful.");
-      refetch();
+
+    if (loginIsSuccess && loginData) {
+      toast.success(loginData.message || "Login Successful.");
       navigate("/");
     }
+
     if (loginError) {
-      toast.error(loginError.data.message || "Login failed.");
+      toast.error(loginError.data?.message || "Login failed.");
     }
   }, [
-    loginIsSuccess,
     registerIsSuccess,
-    loginError,
     registerError,
-    loginData,
     registerData,
+    loginIsSuccess,
+    loginError,
+    loginData,
+    navigate
   ]);
+
 
   return (
     <div className="flex items-center justify-center mt-10 md:mt-20 mb-30">
@@ -166,7 +169,7 @@ const Login = () => {
                 <Label>Role</Label>
                 <Select value={signupInput.role} onValueChange={selectRole}>
                   <SelectTrigger className="w-full">
-                    <SelectValue/>
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -208,7 +211,7 @@ const Login = () => {
               )}
             </CardContent>
             <CardFooter>
-              <Button className="bg-blue-700 text-white hover:bg-blue-800"
+              <Button className="bg-blue-700 w-full text-white hover:bg-blue-800"
                 disabled={registerIsLoading}
                 onClick={() => handleRegistration("signup")}>
                 {registerIsLoading ? (
@@ -264,8 +267,8 @@ const Login = () => {
               )}
             </CardContent>
             <CardFooter>
-              <Button className="text-white bg-green-600 hover:bg-green-700"
-              disabled={loginIsLoading} onClick={() => handleRegistration("login")}>
+              <Button className="text-white w-full bg-green-600 hover:bg-green-700"
+                disabled={loginIsLoading} onClick={() => handleRegistration("login")}>
                 {loginIsLoading ? (
                   <>
                     <Loader className="mr-2 h-4 w-4 animate-spin" /> Please wait...

@@ -18,7 +18,7 @@ const DarkMode = () => {
         <Button
           variant=""
           size="icon"
-          className="relative rounded-full"
+          className="relative rounded-full cursor-pointer"
         >
           {/* Sun Icon */}
           <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -31,9 +31,9 @@ const DarkMode = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800">
-        <DropdownMenuItem onClick={() => setTheme("light")}><Sun /> Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}><Moon /> Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}><Monitor /> System</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={() => setTheme("light")}><Sun /> Light</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={() => setTheme("dark")}><Moon /> Dark</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={() => setTheme("system")}><Monitor /> System</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

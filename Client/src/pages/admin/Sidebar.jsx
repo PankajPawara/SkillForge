@@ -7,7 +7,7 @@ const Sidebar = () => {
   const { user } = useSelector((store) => store.auth);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen border-t pt-1">
 
       {/* SIDEBAR */}
       <aside

@@ -6,10 +6,14 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 const AdminDashboard = () => {
   const { data, isLoading } = useGetAdminStatsQuery();
 
-  if (isLoading) return <LoadingSpinner />;
+  useEffect(() => {
+    refetch();
+  }, [data]);
 
   const { totalUsers = {}, totalCourses = {}, revenue = 0, totalEnrollment = 0 } = data || {};
   const totalUser = (totalUsers.admins || 0) + (totalUsers.students || 0) + (totalUsers.trainers || 0);
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
