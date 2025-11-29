@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Profile = () => {
   const [input, setInput] = useState({
@@ -42,6 +43,11 @@ const Profile = () => {
   const { data, isLoading, refetch } = useLoadUserQuery();
 
   useEffect(() => {
+    refetch()
+  }, []);
+
+  useEffect(() => {
+    refetch()
     if (data?.user) {
       const user = data.user;
       setInput({
@@ -87,7 +93,7 @@ const Profile = () => {
     }
   }, [isSuccess, isError, error]);
 
-  if (isLoading) return <div className="text-center p-8">Loading...</div>;
+  if (isLoading) return <LoadingSpinner />;
 
   const user = data?.user;
 
@@ -155,7 +161,7 @@ const Profile = () => {
             Email: <span className="font-normal">{user?.email}</span>
           </p>
           <p className="text-lg font-semibold">
-            Role: <span className="font-normal">{user?.role?.toUpperCase()}</span>
+            Role: <span className="font-normal">{user?.role.toUpperCase()}</span>
           </p>
 
           {/* Edit Profile Dialog */}
@@ -202,7 +208,7 @@ const Profile = () => {
                       <SelectGroup>
                         <SelectItem value="Student">Student</SelectItem>
                         <SelectItem value="Trainer">Trainer</SelectItem>
-                        {user.role === "Admin" && (
+                        {user?.role === "Admin" && (
                           <SelectItem value="Admin">Admin</SelectItem>
                         )}
                       </SelectGroup>
@@ -228,17 +234,17 @@ const Profile = () => {
       </Card>
 
       {/* Enrolled Courses */}
-      {user.enrolledCourses > 0 && (
+      {user?.enrolledCourses > 0 && (
         <div className="mt-10">
           <h1 className="text-center text-lg font-bold mb-6">MY ENROLLED COURSES</h1>
 
           <Card className=" bg-gray-200 dark:bg-gray-800">
             <CardContent className="p-4">
-              {user.enrolledCourses.length === 0 ? (
+              {user?.enrolledCourses.length === 0 ? (
                 <p className="text-center py-6">You haven’t enrolled in any course yet.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                  {user.enrolledCourses.map((course) => (
+                  {user?.enrolledCourses.map((course) => (
                     <Course key={course._id} course={course} />
                   ))}
                 </div>

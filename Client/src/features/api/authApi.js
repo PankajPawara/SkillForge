@@ -4,11 +4,13 @@ import { userLoggedIn, userLoggedOut } from "../authSlice";
 const USER_API = `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/`;
 
 export const authApi = createApi({
+
     reducerPath: "authApi",
     baseQuery: fetchBaseQuery({
         baseUrl: USER_API,
         credentials: "include",
     }),
+
     endpoints: (builder) => ({
         registerUser: builder.mutation({
             query: (inputData) => ({
@@ -17,12 +19,13 @@ export const authApi = createApi({
                 body: inputData,
             }),
         }),
+
         loginUser: builder.mutation({
             query: (inputData) => ({
                 url: "login",
                 method: "POST",
                 body: inputData,
-                credentials:"include",
+                credentials: "include",
             }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
@@ -33,6 +36,7 @@ export const authApi = createApi({
                 }
             },
         }),
+
         logoutUser: builder.mutation({
             query: () => ({
                 url: "logout",
@@ -47,10 +51,12 @@ export const authApi = createApi({
                 }
             },
         }),
+        
         loadUser: builder.query({
             query: () => ({
                 url: "profile",
                 method: "GET",
+                credentials: "include",
             }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {

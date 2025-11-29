@@ -38,15 +38,6 @@ const Navbar = () => {
     }, [isSuccess]);
 
 
-    // Block navbar UI until user loads (prevents redirect issues)
-    if (isLoading) {
-        return (
-            <div className="h-16 flex items-center justify-center bg-gray-100 dark:bg-gray-700 shadow-lg">
-                <LoadingSpinner />
-            </div>
-        );
-    }
-
     return (
         <div className="h-16 dark:bg-gray-700 bg-gray-100 shadow-lg fixed top-0 left-0 right-0 duration-300 z-10">
             <div className="max-w-7xl mx-auto flex justify-between items-center gap-10 h-full p-4">

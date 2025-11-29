@@ -28,6 +28,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ManageCourses from "./pages/admin/ManageCourses";
 import About from "./pages/About";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 const appRouter = createBrowserRouter([
   {
@@ -184,6 +186,24 @@ const appRouter = createBrowserRouter([
 ]);
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await dispatch(
+          authApi.endpoints.loadUser.initiate({}, { forceRefetch: true })
+        ).unwrap();
+
+        dispatch(userLoggedIn({ user: res.user }));
+      } catch (err) {
+        dispatch(userLoggedOut());
+      }
+    };
+
+    load();
+  }, []);
+
   return (
     <main>
       <ToastContainer
