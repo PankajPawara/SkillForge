@@ -10,6 +10,8 @@ export const authApi = createApi({
         baseUrl: USER_API,
         prepareHeaders: (headers, { getState }) => {
             const token = getState().auth?.token || localStorage.getItem("token");
+            console.log("token from baseQuery:", token);
+
             if (token) headers.set("Authorization", `Bearer ${token}`);
             return headers;
         },
@@ -69,20 +71,28 @@ export const authApi = createApi({
 
         loadUser: builder.query({
             query: () => "profile",
-            async onQueryStarted(_, { queryFulfilled, dispatch }) {
+            async onQueryStarted(_, { queryFulfilled, dispatch, getState }) {
                 try {
                     const result = await queryFulfilled;
 
                     const user = result?.data?.user;
-                    const token = result?.data?.token;                    
 
-                    localStorage.setItem("token", token);
+                    // get existing token
+                    const token = await getState().auth.token || await localStorage.getItem("token");
+
+                    console.log("token from loadUser:", token);
+
                     localStorage.setItem("user", JSON.stringify(user));
 
+                    // IMPORTANT: ALWAYS pass token
                     dispatch(userLoggedIn({ user, token }));
 
                 } catch (error) {
                     console.log("loadUser error:", error);
+
+                    if (error?.error?.status === 401) {
+                        dispatch(userLoggedOut());
+                    }
                 }
             },
         }),

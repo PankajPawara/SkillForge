@@ -31,6 +31,7 @@ import About from "./pages/About";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { userLoggedIn, userLoggedOut } from "./features/authSlice";
+import { useLoadUserQuery } from "./features/api/authApi";
 
 const appRouter = createBrowserRouter([
   {
@@ -187,30 +188,12 @@ const appRouter = createBrowserRouter([
 ]);
 
 function App() {
-  const dispatch = useDispatch();
+  
+    // this automatically calls loadUser ONCE and caches it
+  useLoadUserQuery(undefined, {
+    skip: !localStorage.getItem("token"),
+  });
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      dispatch(userLoggedOut());
-      return;
-    }
-
-    const loadUser = async () => {
-      try {
-        const res = await dispatch(
-          authApi.endpoints.loadUser.initiate()
-        ).unwrap();
-
-        dispatch(userLoggedIn({ user: res.user, token }));
-      } catch (err) {
-        dispatch(userLoggedOut());
-      }
-    };
-
-    loadUser();
-  }, []);
 
 
   return (
