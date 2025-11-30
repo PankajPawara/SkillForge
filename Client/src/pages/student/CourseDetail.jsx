@@ -135,8 +135,7 @@ const CourseDetail = () => {
           <h2 className="font-bold text-xl mb-3 dark:text-gray-100">Description</h2>
 
           <div
-            className="h-40 overflow-y-auto prose max-w-none dark:text-gray-300"
-            data-color-mode={theme === "dark" ? "dark" : "light"}
+            className="h-40 overflow-y-auto prose max-w-none dark:text-gray-100"
           >
             <MarkdownPreview source={course.description} style={{ background: "transparent" }} />
           </div>
