@@ -13,14 +13,11 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import DarkMode from "@/DarkMode";
 import { Link, useNavigate } from "react-router-dom";
-import { useLogoutUserMutation, useLoadUserQuery } from "@/features/api/authApi.js";
+import { useLogoutUserMutation } from "@/features/api/authApi.js";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import LoadingSpinner from "./LoadingSpinner";
 
 const Navbar = () => {
-
-    const { data: userData, isLoading } = useLoadUserQuery();
     const { user } = useSelector((store) => store.auth);
 
     const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
@@ -112,7 +109,7 @@ const Navbar = () => {
                     ) : (
                         <div className="flex items-center gap-2">
                             <Button variant="outline" onClick={() => navigate("/login")}>Login</Button>
-                            <Button onClick={() => navigate("/signup")} className="hidden md:flex">Signup</Button>
+                            <Button onClick={() => navigate("/login")} className="hidden md:flex">Signup</Button>
                         </div>
                     )}
                 </div>

@@ -1,11 +1,9 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
-import { useLoadUserQuery } from "@/features/api/authApi";
 
 export const ProtectedRoute = ({ children }) => {
-    const { data, isLoading } = useLoadUserQuery();
-    const { user, isAuthenticated } = useSelector((state) => state.auth);
+    const { isLoading, isAuthenticated } = useSelector((state) => state.auth);
 
     if (isLoading) {
         return <LoadingSpinner />;
@@ -29,8 +27,7 @@ export const AuthenticatedUser = ({ children }) => {
 };
 
 export const AdminRoute = ({ children }) => {
-    const { data, isLoading } = useLoadUserQuery();
-    const { user, isAuthenticated } = useSelector((state) => state.auth);
+    const { user,isLoading, isAuthenticated } = useSelector((state) => state.auth);
 
     if (isLoading) {
         return <LoadingSpinner />;

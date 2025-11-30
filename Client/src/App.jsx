@@ -30,6 +30,7 @@ import ManageCourses from "./pages/admin/ManageCourses";
 import About from "./pages/About";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { userLoggedIn, userLoggedOut } from "./features/authSlice";
 
 const appRouter = createBrowserRouter([
   {
@@ -189,20 +190,28 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const load = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      dispatch(userLoggedOut());
+      return;
+    }
+
+    const loadUser = async () => {
       try {
         const res = await dispatch(
-          authApi.endpoints.loadUser.initiate({}, { forceRefetch: true })
+          authApi.endpoints.loadUser.initiate()
         ).unwrap();
 
-        dispatch(userLoggedIn({ user: res.user }));
+        dispatch(userLoggedIn({ user: res.user, token }));
       } catch (err) {
         dispatch(userLoggedOut());
       }
     };
 
-    load();
+    loadUser();
   }, []);
+
 
   return (
     <main>

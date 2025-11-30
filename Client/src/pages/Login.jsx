@@ -118,7 +118,7 @@ const Login = () => {
         </TabsList>
 
         {/* SIGNUP FORM */}
-        <TabsContent value="signup" className="">
+        <TabsContent value="signup" >
           <Card className=" bg-white dark:bg-gray-700">
             <CardHeader>
               <CardTitle>Signup</CardTitle>

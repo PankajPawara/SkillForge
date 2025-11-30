@@ -15,7 +15,6 @@ import { Loader2, Pencil } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Course from "./Course";
 import {
-  useLoadUserQuery,
   useUpdateUserMutation,
 } from "@/features/api/authApi";
 import { toast } from "react-toastify";
@@ -29,8 +28,11 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
+  const { user, isLoading } = useSelector((state) => state.auth);
+
   const [input, setInput] = useState({
     name: "",
     mobile: "",
@@ -40,16 +42,8 @@ const Profile = () => {
 
   const [profilePhoto, setProfilePhoto] = useState(null);
 
-  const { data, isLoading, refetch } = useLoadUserQuery();
-
   useEffect(() => {
-    refetch()
-  }, []);
-
-  useEffect(() => {
-    refetch()
-    if (data?.user) {
-      const user = data.user;
+    if (user) {
       setInput({
         name: user.name,
         mobile: user.mobile,
@@ -57,7 +51,7 @@ const Profile = () => {
         role: user.role,
       });
     }
-  }, [data]);
+  }, [user]);
 
   const [updateUser, { isLoading: updateUserIsLoading, isSuccess, isError, error }] =
     useUpdateUserMutation();
@@ -85,7 +79,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      refetch();
       toast.success("Profile updated successfully!");
     }
     if (isError) {
@@ -94,8 +87,6 @@ const Profile = () => {
   }, [isSuccess, isError, error]);
 
   if (isLoading) return <LoadingSpinner />;
-
-  const user = data?.user;
 
   return (
     <div className="items-center max-w-7xl mx-auto px-4 my-5">

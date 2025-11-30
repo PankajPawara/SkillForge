@@ -8,8 +8,14 @@ export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: fetchBaseQuery({
         baseUrl: USER_API,
+        prepareHeaders: (headers, { getState }) => {
+            const token = getState().auth?.token || localStorage.getItem("token");
+            if (token) headers.set("Authorization", `Bearer ${token}`);
+            return headers;
+        },
         credentials: "include",
     }),
+
 
     endpoints: (builder) => ({
         registerUser: builder.mutation({
@@ -21,18 +27,27 @@ export const authApi = createApi({
         }),
 
         loginUser: builder.mutation({
-            query: (inputData) => ({
+            query: (credentials) => ({
                 url: "login",
                 method: "POST",
-                body: inputData,
-                credentials: "include",
+                body: credentials,
             }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
                     const result = await queryFulfilled;
-                    dispatch(userLoggedIn({ user: result.data.user }));
-                } catch (error) {
-                    console.log("Login error:", error);
+
+                    const token = result?.data?.token;
+                    const user = result?.data?.user;
+
+                    if (!token) console.error("TOKEN NOT FOUND IN LOGIN RESPONSE");
+
+                    localStorage.setItem("token", token);
+                    localStorage.setItem("user", JSON.stringify(user));
+
+                    dispatch(userLoggedIn({ user, token }));
+
+                } catch (err) {
+                    console.log("Login Error:", err);
                 }
             },
         }),
@@ -51,22 +66,27 @@ export const authApi = createApi({
                 }
             },
         }),
-        
+
         loadUser: builder.query({
-            query: () => ({
-                url: "profile",
-                method: "GET",
-                credentials: "include",
-            }),
+            query: () => "profile",
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
                     const result = await queryFulfilled;
-                    dispatch(userLoggedIn({ user: result.data.user }));
+
+                    const user = result?.data?.user;
+                    const token = result?.data?.token;                    
+
+                    localStorage.setItem("token", token);
+                    localStorage.setItem("user", JSON.stringify(user));
+
+                    dispatch(userLoggedIn({ user, token }));
+
                 } catch (error) {
-                    console.log(error);
+                    console.log("loadUser error:", error);
                 }
             },
         }),
+
         updateUser: builder.mutation({
             query: (formData) => ({
                 url: "profile/update",

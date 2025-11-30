@@ -76,7 +76,7 @@ export const login = async (req, res) => {
                 message: "Incorrect username."
             })
         }
-        
+
         const isPasswordMatch = await bcrypt.compare(password, user.password);
 
         if (!isPasswordMatch) {
@@ -85,20 +85,21 @@ export const login = async (req, res) => {
                 message: "Incorrect password."
             })
         }
-        generateToken(res,user);
-        return res.status(200).json({
-            success: true,
-            message: `Welcome back ${user.name}`,
+        generateToken(res, user, `Welcome back ${user.name}`);
 
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                mobile: user.mobile,
-                role: user.role,
-                photoUrl: user.photoUrl,
-            }
-        });
+        return res.status(200)
+            // .json({
+            //     success: true,
+            //     // message: `Welcome back ${user.name}`,
+            //     // user: {
+            //     //     id: user._id,
+            //     //     name: user.name,
+            //     //     email: user.email,
+            //     //     mobile: user.mobile,
+            //     //     role: user.role,
+            //     //     photoUrl: user.photoUrl,
+            //     // }
+            // });
 
     } catch (error) {
         console.log(error);
@@ -145,56 +146,56 @@ export const getUserProfile = async (req, res) => {
     }
 }
 export const updateProfile = async (req, res) => {
-  try {
-    const userId = req.id;
-    const { name, mobile, email, role } = req.body;
-    const profilePhoto = req.file;
+    try {
+        const userId = req.id;
+        const { name, mobile, email, role } = req.body;
+        const profilePhoto = req.file;
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-        success: false,
-      });
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false,
+            });
+        }
+
+        let photoUrl = user.photoUrl;
+
+        if (profilePhoto) {
+            // Delete old profile photo from Cloudinary if it exists
+            if (user.photoUrl) {
+                const publicId = user.photoUrl.split("/").pop().split(".")[0];
+                await deleteMediaFromCloudinary(publicId);
+            }
+
+            // Upload new profile photo to Cloudinary
+            const cloudResponse = await uploadMedia(profilePhoto.path);
+            photoUrl = cloudResponse.secure_url;
+        }
+
+        const updatedData = {
+            name,
+            mobile,
+            email,
+            role,
+            photoUrl,
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+            new: true,
+        }).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            user: updatedUser,
+            message: "Profile updated successfully.",
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update profile",
+        });
     }
-
-    let photoUrl = user.photoUrl;
-
-    if (profilePhoto) {
-      // Delete old profile photo from Cloudinary if it exists
-      if (user.photoUrl) {
-        const publicId = user.photoUrl.split("/").pop().split(".")[0];
-        await deleteMediaFromCloudinary(publicId);
-      }
-
-      // Upload new profile photo to Cloudinary
-      const cloudResponse = await uploadMedia(profilePhoto.path);
-      photoUrl = cloudResponse.secure_url;
-    }
-
-    const updatedData = {
-      name,
-      mobile,
-      email,
-      role,
-      photoUrl,
-    };
-
-    const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
-      new: true,
-    }).select("-password");
-
-    return res.status(200).json({
-      success: true,
-      user: updatedUser,
-      message: "Profile updated successfully.",
-    });
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to update profile",
-    });
-  }
 };

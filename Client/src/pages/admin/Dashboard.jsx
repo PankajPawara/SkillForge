@@ -15,21 +15,22 @@ import {
 const Dashboard = () => {
   const { data, isLoading, isError } = useGetPublishedCreatorCoursesQuery();
 
-  if (isLoading) return <LoadingSpinner />;
-
+  
   const { publishedCourses = [], soldCourses = [] } = data || {};
-
+  
   const courseData =
-    soldCourses?.map((course) => ({
-      name: course.courseId.courseTitle,
-      price: course.courseId.coursePrice,
-    })) || [];
-
+  soldCourses?.map((course) => ({
+    name: course.courseId.courseTitle,
+    price: course.courseId.coursePrice,
+  })) || [];
+  
   const totalRevenue = soldCourses?.reduce(
     (acc, item) => acc + (item.amount || 0),
     0
   );
-
+  
+  if (isLoading) return <LoadingSpinner />;
+  
   return (
     <div className="space-y-6">
       {/* Stats Grid */}

@@ -213,7 +213,10 @@ const LectureTab = () => {
         {mediaProgress && (
           <div className="my-4">
             <Progress value={uploadProgress} />
-            <p className="text-sm mt-2">{uploadProgress}% uploaded</p>
+            <p className=" text-sm mt-2">
+              <Loader2 className="inline-block mr-2 h-5 w-5 animate-spin" />
+              {uploadProgress}% uploaded
+            </p>
           </div>
         )}
 
