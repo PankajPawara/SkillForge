@@ -7,7 +7,13 @@ export const adminApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: ADMIN_API,
     credentials: "include",
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().auth?.token || localStorage.getItem("token");
+      if (token) headers.set("Authorization", `Bearer ${token}`);
+      return headers;
+    },
   }),
+
   tagTypes: ["Courses", "Users", "Stats"],
   endpoints: (builder) => ({
 

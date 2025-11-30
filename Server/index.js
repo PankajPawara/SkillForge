@@ -19,8 +19,10 @@ const app = express();
 const PORT = process.env.PORT || 4080;
 
 app.use(cors({
-    origin:process.env.FRONTEND_URL,
-    credentials:true
+  origin: process.env.FRONTEND_URL,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 app.use(cookieParser());
@@ -35,7 +37,7 @@ app.use("/api/v1/media", mediaRoute);
 app.use("/api/v1/purchase", purchaseRoute);
 app.use("/api/v1/progress", courseProgressRoute);
 app.use("/api/v1/admin", adminRoutes);
- 
+
 // RAW body ONLY for Stripe webhook
 app.post(
   "/api/v1/purchase/webhook",
@@ -45,7 +47,7 @@ app.post(
 
 
 
- 
+
 app.listen(PORT, () => {
-    console.log(`Server listen at port ${PORT}`);
+  console.log(`Server listen at port ${PORT}`);
 })

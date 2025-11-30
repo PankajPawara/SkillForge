@@ -8,6 +8,11 @@ export const courseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
     credentials: "include",
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().auth?.token || localStorage.getItem("token");
+      if (token) headers.set("Authorization", `Bearer ${token}`);
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
     createCourse: builder.mutation({
@@ -86,7 +91,7 @@ export const courseApi = createApi({
         method: "DELETE",
       }),
     }),
-    
+
     createLecture: builder.mutation({
       query: ({ lectureTitle, courseId }) => ({
         url: `/${courseId}/lecture`,
