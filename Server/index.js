@@ -27,6 +27,13 @@ app.use(cors({
 
 app.use(cookieParser());
 
+// RAW body ONLY for Stripe webhook
+app.post(
+  "/api/v1/purchase/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
+
 // default middleware
 app.use(express.json());
 
@@ -37,16 +44,6 @@ app.use("/api/v1/media", mediaRoute);
 app.use("/api/v1/purchase", purchaseRoute);
 app.use("/api/v1/progress", courseProgressRoute);
 app.use("/api/v1/admin", adminRoutes);
-
-// RAW body ONLY for Stripe webhook
-app.post(
-  "/api/v1/purchase/webhook",
-  express.raw({ type: "application/json" }),
-  stripeWebhook
-);
-
-
-
 
 app.listen(PORT, () => {
   console.log(`Server listen at port ${PORT}`);
