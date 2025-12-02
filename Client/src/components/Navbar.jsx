@@ -85,7 +85,7 @@ const Navbar = () => {
                                         </DropdownMenuItem>
                                     )}
 
-                                    {user?.enrolledCourses > 0 && (
+                                    {user?.enrolledCourses.length > 0 && (
                                         <DropdownMenuItem onClick={() => navigate("/my-learning")}
                                             className="flex items-center gap-2 cursor-pointer">
                                             <LucidePlaySquare size={15} /> My Learning
