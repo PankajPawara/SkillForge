@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useGetAdminStatsQuery } from "@/features/api/adminApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 const AdminDashboard = () => {
-  const { data, isLoading } = useGetAdminStatsQuery();
+  const { data, isLoading, refetch} = useGetAdminStatsQuery();
 
   useEffect(() => {
     refetch();
