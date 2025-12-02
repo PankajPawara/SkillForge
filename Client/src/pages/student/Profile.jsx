@@ -29,6 +29,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useSelector } from "react-redux";
+import MyLearning from "./MyLearning";
 
 const Profile = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
@@ -226,23 +227,7 @@ const Profile = () => {
 
       {/* Enrolled Courses */}
       {user?.enrolledCourses?.length > 0 && (
-        <div className="mt-10">
-          <h1 className="text-center text-lg font-bold mb-6">MY ENROLLED COURSES</h1>
-
-          <Card className="bg-gray-200 dark:bg-gray-800">
-            <CardContent className="p-4">
-              {user?.enrolledCourses?.length === 0 ? (
-                <p className="text-center py-6">You haven’t enrolled in any course yet.</p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                  {user?.enrolledCourses.map((course) => (
-                    <Course key={course._id} course={course} />
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        <MyLearning/>
       )}
     </div>
   );

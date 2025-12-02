@@ -9,7 +9,7 @@ const MyLearning = () => {
 
   return (
     <div className="max-w-7xl mx-auto my-10 px-4">
-      <h1 className="font-bold text-3xl text-center mb-10">MY LEARNING</h1>
+      <h1 className="font-bold text-3xl text-center mb-10">MY ENROLLED COURSES</h1>
 
       <div className="min-h-[300px]">
         {isLoading ? (
