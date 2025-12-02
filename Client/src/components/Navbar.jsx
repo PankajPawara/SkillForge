@@ -27,13 +27,13 @@ const Navbar = () => {
         await logoutUser();
     };
 
+
     useEffect(() => {
         if (isSuccess) {
             toast.success(data?.message || "Logged out successfully");
             navigate("/login");
         }
     }, [isSuccess]);
-
 
     return (
         <div className="h-16 dark:bg-gray-700 bg-gray-100 shadow-lg fixed top-0 left-0 right-0 duration-300 z-10">
@@ -85,7 +85,7 @@ const Navbar = () => {
                                         </DropdownMenuItem>
                                     )}
 
-                                    {user?.enrolledCourses.length > 0 && (
+                                    {user?.enrolledCourses?.length > 0 && (
                                         <DropdownMenuItem onClick={() => navigate("/my-learning")}
                                             className="flex items-center gap-2 cursor-pointer">
                                             <LucidePlaySquare size={15} /> My Learning

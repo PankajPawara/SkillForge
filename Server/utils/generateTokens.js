@@ -23,6 +23,7 @@ export const generateToken = (res, user, message) => {
         email: user.email,
         mobile: user.mobile,
         role: user.role,
+        enrolledCourses: user.enrolledCourses,
         photoUrl: user.photoUrl,
       },
     });
